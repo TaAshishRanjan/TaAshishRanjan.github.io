@@ -32,13 +32,14 @@
             color: white;
             text-align: center;
             text-decoration: none;
+            cursor: pointer;
         }
         nav a:hover {
             background-color: #ddd;
             color: black;
         }
         .container {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: flex-start;
             padding: 20px;
@@ -90,30 +91,50 @@
         <h1>Ashish Ranjan</h1>
     </header>
     <nav>
-        <a href="#">Home</a>
-        <a href="#">Technical Projects</a>
-        <a href="#">My View</a>
-        <a href="#">Contact</a>
+        <a onclick="showSection('home')">Home</a>
+        <a onclick="showSection('projects')">Technical Projects</a>
+        <a onclick="showSection('my-view')">My View</a>
+        <a onclick="showSection('contact')">Contact</a>
     </nav>
-    <div class="container">
+    <div id="home" class="container" style="display: block;">
         <div class="headline">
             <h1>I am happy to know that I am curious.</h1>
         </div>
+    </div>
+    <div id="projects" class="container">
+        <div class="headline">
+            <h1>Technical Projects</h1>
+            <!-- Add your technical projects here -->
+        </div>
+    </div>
+    <div id="my-view" class="container">
         <div class="my-view">
             <h2>My View</h2>
             <textarea id="myViewText" placeholder="Write your thoughts here..."></textarea>
             <button onclick="saveMyView()">Save</button>
             <p id="savedMessage" style="color: green; display: none;">Your thoughts have been saved!</p>
         </div>
+    </div>
+    <div id="contact" class="container">
         <div class="contact-info">
             <p>Contact me:</p>
             <p>Email: <a href="mailto:your-email@example.com">bi.ashishr@gmail.com</a></p>
-            <p>LinkedIn: <a href="https://www.linkedin.com/in/your-profile" target="_blank">www.linkedin.com/in/ashish-ranjan173</a></p>
-            <p>Twitter: <a href="https://instagram.com/your-profile" target="_blank">@ashish_ranjan87</a></p>
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/your-profile" target="_blank">www.linkedin.com/in/
+ashish-ranjan173
+</a></p>
+            <p>Twitter: <a href="https://twitter.com/your-profile" target="_blank">https://www.instagram.com/ashish_ranjan87?igsh=MWlpeWo3cHJuaGlvbg==</a></p>
             <!-- Add more links as needed -->
         </div>
     </div>
     <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.container');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
         function saveMyView() {
             const myViewText = document.getElementById('myViewText').value;
             localStorage.setItem('myViewText', myViewText);
