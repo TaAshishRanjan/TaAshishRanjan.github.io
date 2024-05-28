@@ -126,11 +126,28 @@
         .entry-comments button:hover {
             background-color: #45a049;
         }
+        .content-display {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+        .delete-btn {
+            margin-left: 10px;
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+        .comment-toggle-btn {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>My Website</h1>
+        <h1>Ashish Ranjan</h1>
     </header>
     <nav>
         <a onclick="showSection('home')">Home</a>
@@ -181,8 +198,22 @@
             <!-- Add more links as needed -->
         </div>
     </div>
+    <div id="content-display" class="container content-display" style="display: none;">
+        <h2 id="content-title"></h2>
+        <p id="content-text"></p>
+        <div id="comment-section" style="display: none;">
+            <textarea id="commentText" placeholder="Add a comment..."></textarea>
+            <button onclick="saveComment()" class="comment-toggle-btn">Submit Comment</button>
+            <div id="comments-list">
+                <!-- Comments will be dynamically added here -->
+            </div>
+        </div>
+        <button onclick="toggleCommentSection()" class="comment-toggle-btn">Add a Comment</button>
+    </div>
     <script>
-        const password = "yourpassword"; // Set your password here
+        const password = "Asarfi@Chuski"; // Set your password here
+        let currentEntryId = null;
+        let currentEntryType = null;
 
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.container');
@@ -236,18 +267,19 @@
             }
         }
 
+        function deleteEntry(id, type) {
+            const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
+            const updatedEntries = entries.filter(entry => entry.id !== id);
+            localStorage.setItem(type + 's', JSON.stringify(updatedEntries));
+            loadEntries();
+        }
+
         function addProjectEntry(project) {
             const entry = document.createElement('div');
             entry.className = 'entry';
             entry.innerHTML = `
-                <a href="#" onclick="viewProject(${project.id})">${project.title}</a>
-                <div class="entry-comments" id="project-comments-${project.id}" style="display:none;">
-                    <textarea placeholder="Add a comment..."></textarea>
-                    <button onclick="saveComment(${project.id}, 'project')">Submit</button>
-                    <div id="comments-list-${project.id}">
-                        <!-- Comments will be dynamically added here -->
-                    </div>
-                </div>
+                <a href="#" onclick="viewEntry(${project.id}, 'project')">${project.title}</a>
+                <button onclick="deleteEntry(${project.id}, 'project')" class="delete-btn">Delete</button>
             `;
             document.getElementById('project-entries').appendChild(entry);
         }
@@ -256,89 +288,80 @@
             const entry = document.createElement('div');
             entry.className = 'entry';
             entry.innerHTML = `
-                <a href="#" onclick="viewView(${view.id})">${view.title}</a>
-                <div class="entry-comments" id="view-comments-${view.id}" style="display:none;">
-                    <textarea placeholder="Add a comment..."></textarea>
-                    <button onclick="saveComment(${view.id}, 'view')">Submit</button>
-                    <div id="comments-list-${view.id}">
-                        <!-- Comments will be dynamically added here -->
-                    </div>
-                </div>
+                <a href="#" onclick="viewEntry(${view.id}, 'view')">${view.title}</a>
+                <button onclick="deleteEntry(${view.id}, 'view')" class="delete-btn">Delete</button>
             `;
             document.getElementById('view-entries').appendChild(entry);
         }
 
-        function viewProject(id) {
-            const projects = JSON.parse(localStorage.getItem('projects')) || [];
-            const project = projects.find(p => p.id === id);
-            if (project) {
-                alert(project.text);
-                document.getElement
-                ById(`project-comments-${id}`).style.display = 'block';
-                loadComments(id, 'project');
+        function viewEntry(id, type) {
+            currentEntryId = id;
+            currentEntryType = type;
+            const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
+            const entry = entries.find(e => e.id === id);
+            if (entry) {
+                document.getElementById('content-title').textContent = entry.title;
+                document.getElementById('content-text').textContent = entry.text;
+                document.getElementById('content-display').style.display = 'block';
+                document.getElementById('comment-section').style.display = 'none';
+                loadComments(id, type);
+                showSection('content-display');
             }
         }
 
-        function viewView(id) {
-            const views = JSON.parse(localStorage.getItem('views')) || [];
-            const view = views.find(v => v.id === id);
-            if (view) {
-                alert(view.text);
-                document.getElementById(`view-comments-${id}`).style.display = 'block';
-                loadComments(id, 'view');
-            }
-        }
-
-        function saveComment(id, type) {
-            const commentText = document.querySelector(`#${type}-comments-${id} textarea`).value;
+        function saveComment() {
+            const commentText = document.getElementById('commentText').value;
             if (commentText.trim() !== '') {
-                const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
-                const entry = entries.find(e => e.id === id);
+                const entries = JSON.parse(localStorage.getItem(currentEntryType + 's')) || [];
+                const entry = entries.find(e => e.id === currentEntryId);
                 entry.comments.push(commentText);
-                localStorage.setItem(type + 's', JSON.stringify(entries));
-                addCommentToList(id, commentText, type);
-                document.querySelector(`#${type}-comments-${id} textarea`).value = '';
+                localStorage.setItem(currentEntryType + 's', JSON.stringify(entries));
+                addCommentToList(currentEntryId, commentText, currentEntryType);
+                document.getElementById('commentText').value = '';
             }
         }
 
         function addCommentToList(id, commentText, type) {
             const commentDiv = document.createElement('div');
             commentDiv.textContent = commentText;
-            document.getElementById(`comments-list-${id}`).appendChild(commentDiv);
+            document.getElementById('comments-list').appendChild(commentDiv);
         }
 
         function loadComments(id, type) {
             const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
             const entry = entries.find(e => e.id === id);
-            const commentsList = document.getElementById(`comments-list-${id}`);
+            const commentsList = document.getElementById('comments-list');
             commentsList.innerHTML = '';
             entry.comments.forEach(comment => {
                 addCommentToList(id, comment, type);
             });
         }
 
+        function toggleCommentSection() {
+            const commentSection = document.getElementById('comment-section');
+            if (commentSection.style.display === 'none' || commentSection.style.display === '') {
+                commentSection.style.display = 'block';
+            } else {
+                commentSection.style.display = 'none';
+            }
+        }
+
         function loadEntries() {
+            document.getElementById('project-entries').innerHTML = '';
+            document.getElementById('view-entries').innerHTML = '';
             const projects = JSON.parse(localStorage.getItem('projects')) || [];
             projects.forEach(addProjectEntry);
-
             const views = JSON.parse(localStorage.getItem('views')) || [];
             views.forEach(addViewEntry);
         }
 
         function discardUnsavedComments() {
-            const commentTextareas = document.querySelectorAll('.entry-comments textarea');
-            commentTextareas.forEach(textarea => {
-                textarea.value = '';
-            });
-            const commentSections = document.querySelectorAll('.entry-comments');
-            commentSections.forEach(section => {
-                section.style.display = 'none';
-            });
+            document.getElementById('commentText').value = '';
+            document.getElementById('comment-section').style.display = 'none';
         }
 
         document.addEventListener('DOMContentLoaded', loadEntries);
     </script>
 </body>
 </html>
-
 
