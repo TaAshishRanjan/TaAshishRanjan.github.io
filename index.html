@@ -236,9 +236,12 @@
             if (userPassword === password) {
                 if (type === 'project') {
                     document.getElementById('project-editor').style.display = 'block';
+                    document.getElementById('view-editor').style.display = 'none';
                 } else if (type === 'view') {
                     document.getElementById('view-editor').style.display = 'block';
+                    document.getElementById('project-editor').style.display = 'none';
                 }
+                currentEntryId = null; // Reset currentEntryId to ensure a new entry is being created
             } else {
                 alert("Incorrect password. You are not authorized to create content.");
             }
@@ -249,11 +252,13 @@
             const projectText = document.getElementById('projectText').value;
             if (projectTitle.trim() !== '' && projectText.trim() !== '') {
                 const projects = JSON.parse(localStorage.getItem('projects')) || [];
-                const project = projects.find(p => p.id === currentEntryId);
-                if (project) {
+                if (currentEntryId !== null) {
                     // Update existing project
-                    project.title = projectTitle;
-                    project.text = projectText;
+                    const projectIndex = projects.findIndex(p => p.id === currentEntryId);
+                    if (projectIndex !== -1) {
+                        projects[projectIndex].title = projectTitle;
+                        projects[projectIndex].text = projectText;
+                    }
                 } else {
                     // Create new project
                     const newProject = { id: Date.now(), title: projectTitle, text: projectText, comments: [] };
@@ -273,11 +278,13 @@
             const myViewText = document.getElementById('myViewText').value;
             if (viewTitle.trim() !== '' && myViewText.trim() !== '') {
                 const views = JSON.parse(localStorage.getItem('views')) || [];
-                const view = views.find(v => v.id === currentEntryId);
-                if (view) {
+                if (currentEntryId !== null) {
                     // Update existing view
-                    view.title = viewTitle;
-                    view.text = myViewText;
+                    const viewIndex = views.findIndex(v => v.id === currentEntryId);
+                    if (viewIndex !== -1) {
+                        views[viewIndex].title = viewTitle;
+                        views[viewIndex].text = myViewText;
+                    }
                 } else {
                     // Create new view
                     const newView = { id: Date.now(), title: viewTitle, text: myViewText, comments: [] };
@@ -314,10 +321,12 @@
                     document.getElementById('projectTitle').value = entry.title;
                     document.getElementById('projectText').value = entry.text;
                     document.getElementById('project-editor').style.display = 'block';
+                    document.getElementById('view-editor').style.display = 'none';
                 } else if (type === 'view') {
                     document.getElementById('viewTitle').value = entry.title;
                     document.getElementById('myViewText').value = entry.text;
                     document.getElementById('view-editor').style.display = 'block';
+                    document.getElementById('project-editor').style.display = 'none';
                 }
             } else {
                 alert("Incorrect password. You are not authorized to edit content.");
