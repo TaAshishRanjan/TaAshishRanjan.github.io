@@ -68,7 +68,7 @@
         }
         .my-view textarea, .projects textarea {
             width: 100%;
-            height: 200px;
+            height: 100px;
             border: 1px solid #ccc;
             padding: 10px;
             font-size: 16px;
@@ -176,6 +176,7 @@
             <div id="project-editor" style="display:none;">
                 <input type="text" id="projectTitle" placeholder="Project Title">
                 <textarea id="projectText" placeholder="Write your project details here..."></textarea>
+                <input type="file" id="projectImage" accept="image/*">
                 <button onclick="saveProject()">Save Project</button>
             </div>
             <div class="entries" id="project-entries">
@@ -189,6 +190,7 @@
             <div id="view-editor" style="display:none;">
                 <input type="text" id="viewTitle" placeholder="View Title">
                 <textarea id="myViewText" placeholder="Write your thoughts here..."></textarea>
+                <input type="file" id="viewImage" accept="image/*">
                 <button onclick="saveMyView()">Save View</button>
             </div>
             <div class="entries" id="view-entries">
@@ -207,7 +209,7 @@
     </div>
     <div id="content-display" class="container content-display" style="display: none;">
         <h2 id="content-title"></h2>
-        <p id="content-text"></p>
+        <div id="content-text"></div>
         <div id="comment-section">
             <textarea id="commentText" placeholder="Add a comment..."></textarea>
             <button onclick="saveComment()" class="comment-toggle-btn">Submit Comment</button>
@@ -250,52 +252,74 @@
         function saveProject() {
             const projectTitle = document.getElementById('projectTitle').value;
             const projectText = document.getElementById('projectText').value;
+            const projectImage = document.getElementById('projectImage').files[0];
+
             if (projectTitle.trim() !== '' && projectText.trim() !== '') {
-                const projects = JSON.parse(localStorage.getItem('projects')) || [];
-                if (currentEntryId !== null) {
-                    // Update existing project
-                    const projectIndex = projects.findIndex(p => p.id === currentEntryId);
-                    if (projectIndex !== -1) {
-                        projects[projectIndex].title = projectTitle;
-                        projects[projectIndex].text = projectText;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageDataUrl = e.target.result;
+                    const content = projectText + (projectImage ? `<br><img src="${imageDataUrl}" alt="Project Image">` : '');
+                    const projects = JSON.parse(localStorage.getItem('projects')) || [];
+                    const project = projects.find(p => p.id === currentEntryId);
+                    if (project) {
+                        // Update existing project
+                        project.title = projectTitle;
+                        project.text = content;
+                    } else {
+                        // Create new project
+                        const newProject = { id: Date.now(), title: projectTitle, text: content, comments: [] };
+                        projects.push(newProject);
                     }
+                    localStorage.setItem('projects', JSON.stringify(projects));
+                    loadEntries();
+                    document.getElementById('projectTitle').value = '';
+                    document.getElementById('projectText').value = '';
+                    document.getElementById('projectImage').value = '';
+                    document.getElementById('project-editor').style.display = 'none';
+                    currentEntryId = null;
+                };
+                if (projectImage) {
+                    reader.readAsDataURL(projectImage);
                 } else {
-                    // Create new project
-                    const newProject = { id: Date.now(), title: projectTitle, text: projectText, comments: [] };
-                    projects.push(newProject);
+                    reader.onload({ target: { result: '' } });
                 }
-                localStorage.setItem('projects', JSON.stringify(projects));
-                loadEntries();
-                document.getElementById('projectTitle').value = '';
-                document.getElementById('projectText').value = '';
-                document.getElementById('project-editor').style.display = 'none';
-                currentEntryId = null;
             }
         }
 
         function saveMyView() {
             const viewTitle = document.getElementById('viewTitle').value;
             const myViewText = document.getElementById('myViewText').value;
+            const viewImage = document.getElementById('viewImage').files[0];
+
             if (viewTitle.trim() !== '' && myViewText.trim() !== '') {
-                const views = JSON.parse(localStorage.getItem('views')) || [];
-                if (currentEntryId !== null) {
-                    // Update existing view
-                    const viewIndex = views.findIndex(v => v.id === currentEntryId);
-                    if (viewIndex !== -1) {
-                        views[viewIndex].title = viewTitle;
-                        views[viewIndex].text = myViewText;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageDataUrl = e.target.result;
+                    const content = myViewText + (viewImage ? `<br><img src="${imageDataUrl}" alt="View Image">` : '');
+                    const views = JSON.parse(localStorage.getItem('views')) || [];
+                    const view = views.find(v => v.id === currentEntryId);
+                    if (view) {
+                        // Update existing view
+                        view.title = viewTitle;
+                        view.text = content;
+                    } else {
+                        // Create new view
+                        const newView = { id: Date.now(), title: viewTitle, text: content, comments: [] };
+                        views.push(newView);
                     }
+                    localStorage.setItem('views', JSON.stringify(views));
+                    loadEntries();
+                    document.getElementById('viewTitle').value = '';
+                    document.getElementById('myViewText').value = '';
+                    document.getElementById('viewImage').value = '';
+                    document.getElementById('view-editor').style.display = 'none';
+                    currentEntryId = null;
+                };
+                if (viewImage) {
+                    reader.readAsDataURL(viewImage);
                 } else {
-                    // Create new view
-                    const newView = { id: Date.now(), title: viewTitle, text: myViewText, comments: [] };
-                    views.push(newView);
+                    reader.onload({ target: { result: '' } });
                 }
-                localStorage.setItem('views', JSON.stringify(views));
-                loadEntries();
-                document.getElementById('viewTitle').value = '';
-                document.getElementById('myViewText').value = '';
-                document.getElementById('view-editor').style.display = 'none';
-                currentEntryId = null;
             }
         }
 
@@ -319,14 +343,30 @@
                 currentEntryId = id;
                 if (type === 'project') {
                     document.getElementById('projectTitle').value = entry.title;
-                    document.getElementById('projectText').value = entry.text;
+                    document.getElementById('projectText').value = entry.text.replace(/<br><img.*?>/g, '');
+                    const imgMatch = entry.text.match(/<img.*?src="(.*?)"/);
+                    if (imgMatch) {
+                        document.getElementById('projectImage').value = ''; // Clear the file input
+                        // Store the existing image URL to show in the editor if needed
+                        entry.existingImageUrl = imgMatch[1];
+                    } else {
+                        document.getElementById('projectImage').value = '';
+                        delete entry.existingImageUrl;
+                    }
                     document.getElementById('project-editor').style.display = 'block';
-                    document.getElementById('view-editor').style.display = 'none';
                 } else if (type === 'view') {
                     document.getElementById('viewTitle').value = entry.title;
-                    document.getElementById('myViewText').value = entry.text;
+                    document.getElementById('myViewText').value = entry.text.replace(/<br><img.*?>/g, '');
+                    const imgMatch = entry.text.match(/<img.*?src="(.*?)"/);
+                    if (imgMatch) {
+                        document.getElementById('viewImage').value = ''; // Clear the file input
+                        // Store the existing image URL to show in the editor if needed
+                        entry.existingImageUrl = imgMatch[1];
+                    } else {
+                        document.getElementById('viewImage').value = '';
+                        delete entry.existingImageUrl;
+                    }
                     document.getElementById('view-editor').style.display = 'block';
-                    document.getElementById('project-editor').style.display = 'none';
                 }
             } else {
                 alert("Incorrect password. You are not authorized to edit content.");
@@ -366,7 +406,7 @@
             const entry = entries.find(e => e.id === id);
             if (entry) {
                 document.getElementById('content-title').textContent = entry.title;
-                document.getElementById('content-text').textContent = entry.text;
+                document.getElementById('content-text').innerHTML = entry.text;
                 document.getElementById('content-display').style.display = 'block';
                 document.getElementById('comment-section').style.display = 'block';
                 loadComments(id, type);
@@ -429,6 +469,7 @@
     </script>
 </body>
 </html>
+
 
 
 
