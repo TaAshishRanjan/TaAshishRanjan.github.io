@@ -59,21 +59,21 @@
         .contact-info a:hover {
             text-decoration: underline;
         }
-        .my-view {
+        .my-view, .projects {
             margin-top: 20px;
             padding: 20px;
             background: white;
             border: 1px solid #ddd;
             width: 100%;
         }
-        .my-view textarea {
+        .my-view textarea, .projects textarea {
             width: 100%;
             height: 200px;
             border: 1px solid #ccc;
             padding: 10px;
             font-size: 16px;
         }
-        .my-view button {
+        .my-view button, .projects button {
             margin-top: 10px;
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -81,7 +81,42 @@
             border: none;
             cursor: pointer;
         }
-        .my-view button:hover {
+        .my-view button:hover, .projects button:hover {
+            background-color: #45a049;
+        }
+        .my-view .entries, .projects .entries {
+            margin-top: 20px;
+        }
+        .entry {
+            margin-bottom: 10px;
+        }
+        .entry a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .entry a:hover {
+            text-decoration: underline;
+        }
+        .entry-comments {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        .entry-comments textarea {
+            width: 100%;
+            height: 100px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .entry-comments button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .entry-comments button:hover {
             background-color: #45a049;
         }
     </style>
@@ -104,15 +139,28 @@
     <div id="projects" class="container">
         <div class="headline">
             <h1>Technical Projects</h1>
-            <!-- Add your technical projects here -->
+        </div>
+        <div class="projects">
+            <button onclick="showEditor('project')">Create New Project</button>
+            <div id="project-editor" style="display:none;">
+                <textarea id="projectText" placeholder="Write your project details here..."></textarea>
+                <button onclick="saveProject()">Save Project</button>
+            </div>
+            <div class="entries" id="project-entries">
+                <!-- Project entries will be dynamically added here -->
+            </div>
         </div>
     </div>
     <div id="my-view" class="container">
         <div class="my-view">
-            <h2>My View</h2>
-            <textarea id="myViewText" placeholder="Write your thoughts here..."></textarea>
-            <button onclick="saveMyView()">Save</button>
-            <p id="savedMessage" style="color: green; display: none;">Your thoughts have been saved!</p>
+            <button onclick="showEditor('view')">Create New View</button>
+            <div id="view-editor" style="display:none;">
+                <textarea id="myViewText" placeholder="Write your thoughts here..."></textarea>
+                <button onclick="saveMyView()">Save View</button>
+            </div>
+            <div class="entries" id="view-entries">
+                <!-- View entries will be dynamically added here -->
+            </div>
         </div>
     </div>
     <div id="contact" class="container">
@@ -125,6 +173,8 @@
         </div>
     </div>
     <script>
+        const password = "Asarfi@Chuski"; // Set your password here
+
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.container');
             sections.forEach(section => {
@@ -133,24 +183,136 @@
             document.getElementById(sectionId).style.display = 'block';
         }
 
-        function saveMyView() {
-            const myViewText = document.getElementById('myViewText').value;
-            localStorage.setItem('myViewText', myViewText);
-            document.getElementById('savedMessage').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('savedMessage').style.display = 'none';
-            }, 2000);
-        }
-
-        function loadMyView() {
-            const savedText = localStorage.getItem('myViewText');
-            if (savedText) {
-                document.getElementById('myViewText').value = savedText;
+        function showEditor(type) {
+            const userPassword = prompt("Enter the password to create content:");
+            if (userPassword === password) {
+                if (type === 'project') {
+                    document.getElementById('project-editor').style.display = 'block';
+                } else if (type === 'view') {
+                    document.getElementById('view-editor').style.display = 'block';
+                }
+            } else {
+                alert("Incorrect password. You are not authorized to create content.");
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadMyView);
+        function saveProject() {
+            const projectText = document.getElementById('projectText').value;
+            if (projectText.trim() !== '') {
+                const projects = JSON.parse(localStorage.getItem('projects')) || [];
+                const project = { id: Date.now(), text: projectText, comments: [] };
+                projects.push(project);
+                localStorage.setItem('projects', JSON.stringify(projects));
+                addProjectEntry(project);
+                document.getElementById('projectText').value = '';
+                document.getElementById('project-editor').style.display = 'none';
+            }
+        }
+
+        function saveMyView() {
+            const myViewText = document.getElementById('myViewText').value;
+            if (myViewText.trim() !== '') {
+                const views = JSON.parse(localStorage.getItem('views')) || [];
+                const view = { id: Date.now(), text: myViewText, comments: [] };
+                views.push(view);
+                localStorage.setItem('views', JSON.stringify(views));
+                addViewEntry(view);
+                document.getElementById('myViewText').value = '';
+                document.getElementById('view-editor').style.display = 'none';
+            }
+        }
+
+        function addProjectEntry(project) {
+            const entry = document.createElement('div');
+            entry.className = 'entry';
+            entry.innerHTML = `
+                <a href="#" onclick="viewProject(${project.id})">${project.text.substring(0, 30)}...</a>
+                <div class="entry-comments" id="project-comments-${project.id}" style="display:none;">
+                    <textarea placeholder="Add a comment..."></textarea>
+                    <button onclick="saveComment(${project.id}, 'project')">Submit</button>
+                    <div id="comments-list-${project.id}">
+                        <!-- Comments will be dynamically added here -->
+                    </div>
+                </div>
+            `;
+            document.getElementById('project-entries').appendChild(entry);
+        }
+
+        function addViewEntry(view) {
+            const entry = document.createElement('div');
+            entry.className = 'entry';
+            entry.innerHTML = `
+                <a href="#" onclick="viewView(${view.id})">${view.text.substring(0, 30)}...</a>
+                <div class="entry-comments" id="view-comments-${view.id}" style="display:none;">
+                    <textarea placeholder="Add a comment..."></textarea>
+                    <button onclick="saveComment(${view.id}, 'view')">Submit</button>
+                    <div id="comments-list-${view.id}">
+                        <!-- Comments will be dynamically added here -->
+                    </div>
+                </div>
+            `;
+            document.getElementById('view-entries').appendChild(entry);
+        }
+
+        function viewProject(id) {
+            const projects = JSON.parse(localStorage.getItem('projects')) || [];
+            const project = projects.find(p => p.id === id);
+            if (project) {
+                alert(project.text);
+                document.getElementById(`project-comments-${id}`).style.display = 'block';
+                loadComments(id, 'project');
+            }
+        }
+
+        function viewView(id) {
+            const views = JSON.parse(localStorage.getItem('views')) || [];
+            const view = views.find(v => v.id === id);
+            if (view) {
+                alert(view.text);
+                document.getElementById(`view-comments-${id}`).style.display = 'block';
+                loadComments(id, 'view');
+            }
+        }
+
+        function saveComment(id, type) {
+            const commentText = document.querySelector(`#${type}-comments-${id} textarea`).value;
+            if (commentText.trim() !== '') {
+                const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
+                const entry = entries.find(e => e.id === id);
+                entry.comments.push(commentText);
+                localStorage.setItem(type + 's', JSON.stringify(entries));
+                addCommentToList(id, commentText, type);
+                document.querySelector(`#${type}-comments-${id} textarea`).value = '';
+            }
+        }
+
+        function addCommentToList(id, commentText, type) {
+            const commentDiv = document.createElement('div');
+            commentDiv.textContent = commentText;
+            document.getElementById(`comments-list-${id}`).appendChild(commentDiv);
+        }
+
+        function loadComments(id, type) {
+            const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
+            const entry = entries.find(e => e.id === id);
+            const commentsList = document.getElementById(`comments-list-${id}`);
+            commentsList.innerHTML = '';
+            entry.comments.forEach(comment => {
+                addCommentToList(id, comment, type);
+            });
+        }
+
+        function loadEntries() {
+            const projects = JSON.parse(localStorage.getItem('projects')) || [];
+            projects.forEach(addProjectEntry);
+
+            const views = JSON.parse(localStorage.getItem('views')) || [];
+            views.forEach(addViewEntry);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadEntries);
     </script>
 </body>
 </html>
+
 
