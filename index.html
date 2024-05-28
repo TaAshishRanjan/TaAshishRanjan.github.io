@@ -43,17 +43,45 @@
             align-items: flex-start;
             padding: 20px;
         }
-        .nature-pic {
-            width: 100%;
-            height: auto;
-        }
         .headline {
             font-size: 20px;
             margin-top: 20px;
         }
-        .datetime {
+        .contact-info {
             margin-top: 20px;
             font-size: 18px;
+        }
+        .contact-info a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        .my-view {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+        .my-view textarea {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .my-view button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .my-view button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -63,26 +91,46 @@
     </header>
     <nav>
         <a href="#">Home</a>
-        <a href="#">About</a>
+        <a href="#">Technical Projects</a>
+        <a href="#">My View</a>
         <a href="#">Contact</a>
     </nav>
     <div class="container">
-        <img src="https://source.unsplash.com/random/800x400?nature" alt="Nature" class="nature-pic">
         <div class="headline">
             <h1>I am happy to know that I am curious.</h1>
         </div>
-        <div class="datetime">
-            <p id="datetime"></p>
+        <div class="my-view">
+            <h2>My View</h2>
+            <textarea id="myViewText" placeholder="Write your thoughts here..."></textarea>
+            <button onclick="saveMyView()">Save</button>
+            <p id="savedMessage" style="color: green; display: none;">Your thoughts have been saved!</p>
+        </div>
+        <div class="contact-info">
+            <p>Contact me:</p>
+            <p>Email: <a href="mailto:your-email@example.com">bi.ashishr@gmail.com</a></p>
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/your-profile" target="_blank">www.linkedin.com/in/ashish-ranjan173</a></p>
+            <p>Twitter: <a href="https://instagram.com/your-profile" target="_blank">@ashish_ranjan87</a></p>
+            <!-- Add more links as needed -->
         </div>
     </div>
     <script>
-        function updateDateTime() {
-            const now = new Date();
-            const datetime = now.toLocaleString();
-            document.getElementById('datetime').textContent = datetime;
+        function saveMyView() {
+            const myViewText = document.getElementById('myViewText').value;
+            localStorage.setItem('myViewText', myViewText);
+            document.getElementById('savedMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('savedMessage').style.display = 'none';
+            }, 2000);
         }
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
+
+        function loadMyView() {
+            const savedText = localStorage.getItem('myViewText');
+            if (savedText) {
+                document.getElementById('myViewText').value = savedText;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMyView);
     </script>
 </body>
-    </html>
+</html>
