@@ -208,7 +208,7 @@
     <div id="content-display" class="container content-display" style="display: none;">
         <h2 id="content-title"></h2>
         <p id="content-text"></p>
-        <div id="comment-section" style="display: none;">
+        <div id="comment-section">
             <textarea id="commentText" placeholder="Add a comment..."></textarea>
             <button onclick="saveComment()" class="comment-toggle-btn">Submit Comment</button>
             <div id="comments-list">
@@ -249,13 +249,22 @@
             const projectText = document.getElementById('projectText').value;
             if (projectTitle.trim() !== '' && projectText.trim() !== '') {
                 const projects = JSON.parse(localStorage.getItem('projects')) || [];
-                const project = { id: Date.now(), title: projectTitle, text: projectText, comments: [] };
-                projects.push(project);
+                const project = projects.find(p => p.id === currentEntryId);
+                if (project) {
+                    // Update existing project
+                    project.title = projectTitle;
+                    project.text = projectText;
+                } else {
+                    // Create new project
+                    const newProject = { id: Date.now(), title: projectTitle, text: projectText, comments: [] };
+                    projects.push(newProject);
+                }
                 localStorage.setItem('projects', JSON.stringify(projects));
-                addProjectEntry(project);
+                loadEntries();
                 document.getElementById('projectTitle').value = '';
                 document.getElementById('projectText').value = '';
                 document.getElementById('project-editor').style.display = 'none';
+                currentEntryId = null;
             }
         }
 
@@ -264,13 +273,22 @@
             const myViewText = document.getElementById('myViewText').value;
             if (viewTitle.trim() !== '' && myViewText.trim() !== '') {
                 const views = JSON.parse(localStorage.getItem('views')) || [];
-                const view = { id: Date.now(), title: viewTitle, text: myViewText, comments: [] };
-                views.push(view);
+                const view = views.find(v => v.id === currentEntryId);
+                if (view) {
+                    // Update existing view
+                    view.title = viewTitle;
+                    view.text = myViewText;
+                } else {
+                    // Create new view
+                    const newView = { id: Date.now(), title: viewTitle, text: myViewText, comments: [] };
+                    views.push(newView);
+                }
                 localStorage.setItem('views', JSON.stringify(views));
-                addViewEntry(view);
+                loadEntries();
                 document.getElementById('viewTitle').value = '';
                 document.getElementById('myViewText').value = '';
                 document.getElementById('view-editor').style.display = 'none';
+                currentEntryId = null;
             }
         }
 
@@ -291,16 +309,15 @@
             if (userPassword === password) {
                 const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
                 const entry = entries.find(e => e.id === id);
+                currentEntryId = id;
                 if (type === 'project') {
                     document.getElementById('projectTitle').value = entry.title;
                     document.getElementById('projectText').value = entry.text;
                     document.getElementById('project-editor').style.display = 'block';
-                    deleteEntry(id, type); // Delete the old entry so that it can be replaced
                 } else if (type === 'view') {
                     document.getElementById('viewTitle').value = entry.title;
                     document.getElementById('myViewText').value = entry.text;
                     document.getElementById('view-editor').style.display = 'block';
-                    deleteEntry(id, type); // Delete the old entry so that it can be replaced
                 }
             } else {
                 alert("Incorrect password. You are not authorized to edit content.");
@@ -342,7 +359,7 @@
                 document.getElementById('content-title').textContent = entry.title;
                 document.getElementById('content-text').textContent = entry.text;
                 document.getElementById('content-display').style.display = 'block';
-                document.getElementById('comment-section').style.display = 'none';
+                document.getElementById('comment-section').style.display = 'block';
                 loadComments(id, type);
                 showSection('content-display');
             }
@@ -403,5 +420,6 @@
     </script>
 </body>
 </html>
+
 
 
