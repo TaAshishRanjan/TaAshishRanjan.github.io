@@ -73,6 +73,13 @@
             padding: 10px;
             font-size: 16px;
         }
+        .my-view input[type="text"], .projects input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+        }
         .my-view button, .projects button {
             margin-top: 10px;
             padding: 10px 20px;
@@ -123,7 +130,7 @@
 </head>
 <body>
     <header>
-        <h1>Ashish Ranjan</h1>
+        <h1>My Website</h1>
     </header>
     <nav>
         <a onclick="showSection('home')">Home</a>
@@ -143,6 +150,7 @@
         <div class="projects">
             <button onclick="showEditor('project')">Create New Project</button>
             <div id="project-editor" style="display:none;">
+                <input type="text" id="projectTitle" placeholder="Project Title">
                 <textarea id="projectText" placeholder="Write your project details here..."></textarea>
                 <button onclick="saveProject()">Save Project</button>
             </div>
@@ -155,6 +163,7 @@
         <div class="my-view">
             <button onclick="showEditor('view')">Create New View</button>
             <div id="view-editor" style="display:none;">
+                <input type="text" id="viewTitle" placeholder="View Title">
                 <textarea id="myViewText" placeholder="Write your thoughts here..."></textarea>
                 <button onclick="saveMyView()">Save View</button>
             </div>
@@ -173,7 +182,7 @@
         </div>
     </div>
     <script>
-        const password = "Asarfi@Chuski"; // Set your password here
+        const password = "yourpassword"; // Set your password here
 
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.container');
@@ -181,6 +190,7 @@
                 section.style.display = 'none';
             });
             document.getElementById(sectionId).style.display = 'block';
+            discardUnsavedComments();
         }
 
         function showEditor(type) {
@@ -197,26 +207,30 @@
         }
 
         function saveProject() {
+            const projectTitle = document.getElementById('projectTitle').value;
             const projectText = document.getElementById('projectText').value;
-            if (projectText.trim() !== '') {
+            if (projectTitle.trim() !== '' && projectText.trim() !== '') {
                 const projects = JSON.parse(localStorage.getItem('projects')) || [];
-                const project = { id: Date.now(), text: projectText, comments: [] };
+                const project = { id: Date.now(), title: projectTitle, text: projectText, comments: [] };
                 projects.push(project);
                 localStorage.setItem('projects', JSON.stringify(projects));
                 addProjectEntry(project);
+                document.getElementById('projectTitle').value = '';
                 document.getElementById('projectText').value = '';
                 document.getElementById('project-editor').style.display = 'none';
             }
         }
 
         function saveMyView() {
+            const viewTitle = document.getElementById('viewTitle').value;
             const myViewText = document.getElementById('myViewText').value;
-            if (myViewText.trim() !== '') {
+            if (viewTitle.trim() !== '' && myViewText.trim() !== '') {
                 const views = JSON.parse(localStorage.getItem('views')) || [];
-                const view = { id: Date.now(), text: myViewText, comments: [] };
+                const view = { id: Date.now(), title: viewTitle, text: myViewText, comments: [] };
                 views.push(view);
                 localStorage.setItem('views', JSON.stringify(views));
                 addViewEntry(view);
+                document.getElementById('viewTitle').value = '';
                 document.getElementById('myViewText').value = '';
                 document.getElementById('view-editor').style.display = 'none';
             }
@@ -226,7 +240,7 @@
             const entry = document.createElement('div');
             entry.className = 'entry';
             entry.innerHTML = `
-                <a href="#" onclick="viewProject(${project.id})">${project.text.substring(0, 30)}...</a>
+                <a href="#" onclick="viewProject(${project.id})">${project.title}</a>
                 <div class="entry-comments" id="project-comments-${project.id}" style="display:none;">
                     <textarea placeholder="Add a comment..."></textarea>
                     <button onclick="saveComment(${project.id}, 'project')">Submit</button>
@@ -242,7 +256,7 @@
             const entry = document.createElement('div');
             entry.className = 'entry';
             entry.innerHTML = `
-                <a href="#" onclick="viewView(${view.id})">${view.text.substring(0, 30)}...</a>
+                <a href="#" onclick="viewView(${view.id})">${view.title}</a>
                 <div class="entry-comments" id="view-comments-${view.id}" style="display:none;">
                     <textarea placeholder="Add a comment..."></textarea>
                     <button onclick="saveComment(${view.id}, 'view')">Submit</button>
@@ -259,7 +273,8 @@
             const project = projects.find(p => p.id === id);
             if (project) {
                 alert(project.text);
-                document.getElementById(`project-comments-${id}`).style.display = 'block';
+                document.getElement
+                ById(`project-comments-${id}`).style.display = 'block';
                 loadComments(id, 'project');
             }
         }
@@ -308,6 +323,17 @@
 
             const views = JSON.parse(localStorage.getItem('views')) || [];
             views.forEach(addViewEntry);
+        }
+
+        function discardUnsavedComments() {
+            const commentTextareas = document.querySelectorAll('.entry-comments textarea');
+            commentTextareas.forEach(textarea => {
+                textarea.value = '';
+            });
+            const commentSections = document.querySelectorAll('.entry-comments');
+            commentSections.forEach(section => {
+                section.style.display = 'none';
+            });
         }
 
         document.addEventListener('DOMContentLoaded', loadEntries);
