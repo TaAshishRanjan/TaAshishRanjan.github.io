@@ -23,6 +23,7 @@
         }
         nav {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             background-color: #333;
         }
@@ -43,6 +44,11 @@
             flex-direction: column;
             align-items: flex-start;
             padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .container.show {
+            display: flex;
         }
         .headline {
             font-size: 20px;
@@ -65,6 +71,7 @@
             background: white;
             border: 1px solid #ddd;
             width: 100%;
+            box-sizing: border-box;
         }
         .my-view textarea, .projects textarea {
             width: 100%;
@@ -72,6 +79,7 @@
             border: 1px solid #ccc;
             padding: 10px;
             font-size: 16px;
+            box-sizing: border-box;
         }
         .my-view input[type="text"], .projects input[type="text"] {
             width: 100%;
@@ -79,6 +87,7 @@
             margin-bottom: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
         .my-view button, .projects button {
             margin-top: 10px;
@@ -128,6 +137,7 @@
             border: 1px solid #ccc;
             padding: 10px;
             font-size: 14px;
+            box-sizing: border-box;
         }
         .entry-comments button {
             margin-top: 10px;
@@ -146,6 +156,7 @@
             background: #fff;
             border: 1px solid #ddd;
             width: 100%;
+            box-sizing: border-box;
         }
         .comment-toggle-btn {
             margin-top: 10px;
@@ -162,7 +173,7 @@
         <a onclick="showSection('my-view')">My View</a>
         <a onclick="showSection('contact')">Contact</a>
     </nav>
-    <div id="home" class="container" style="display: block;">
+    <div id="home" class="container show">
         <div class="headline">
             <h1>I am happy to know that I am curious.</h1>
         </div>
@@ -207,7 +218,7 @@
             <!-- Add more links as needed -->
         </div>
     </div>
-    <div id="content-display" class="container content-display" style="display: none;">
+    <div id="content-display" class="container content-display">
         <h2 id="content-title"></h2>
         <div id="content-text"></div>
         <div id="comment-section">
@@ -227,9 +238,9 @@
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.container');
             sections.forEach(section => {
-                section.style.display = 'none';
+                section.classList.remove('show');
             });
-            document.getElementById(sectionId).style.display = 'block';
+            document.getElementById(sectionId).classList.add('show');
             discardUnsavedComments();
         }
 
@@ -258,7 +269,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const imageDataUrl = e.target.result;
-                    const content = projectText + (projectImage ? `<br><img src="${imageDataUrl}" alt="Project Image">` : '');
+                    const content = projectText.replace(/\n/g, '<br>') + (projectImage ? `<br><img src="${imageDataUrl}" alt="Project Image">` : '');
                     const projects = JSON.parse(localStorage.getItem('projects')) || [];
                     const project = projects.find(p => p.id === currentEntryId);
                     if (project) {
@@ -295,7 +306,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const imageDataUrl = e.target.result;
-                    const content = myViewText + (viewImage ? `<br><img src="${imageDataUrl}" alt="View Image">` : '');
+                    const content = myViewText.replace(/\n/g, '<br>') + (viewImage ? `<br><img src="${imageDataUrl}" alt="View Image">` : '');
                     const views = JSON.parse(localStorage.getItem('views')) || [];
                     const view = views.find(v => v.id === currentEntryId);
                     if (view) {
@@ -343,12 +354,11 @@
                 currentEntryId = id;
                 if (type === 'project') {
                     document.getElementById('projectTitle').value = entry.title;
-                    document.getElementById('projectText').value = entry.text.replace(/<br><img.*?>/g, '');
+                    document.getElementById('projectText').value = entry.text.replace(/<br><img.*?>/g, '').replace(/<br>/g, '\n');
                     const imgMatch = entry.text.match(/<img.*?src="(.*?)"/);
                     if (imgMatch) {
                         document.getElementById('projectImage').value = ''; // Clear the file input
-                        // Store the existing image URL to show in the editor if needed
-                        entry.existingImageUrl = imgMatch[1];
+                        entry.existingImageUrl = imgMatch[1]; // Store the existing image URL to show in the editor if needed
                     } else {
                         document.getElementById('projectImage').value = '';
                         delete entry.existingImageUrl;
@@ -356,12 +366,11 @@
                     document.getElementById('project-editor').style.display = 'block';
                 } else if (type === 'view') {
                     document.getElementById('viewTitle').value = entry.title;
-                    document.getElementById('myViewText').value = entry.text.replace(/<br><img.*?>/g, '');
+                    document.getElementById('myViewText').value = entry.text.replace(/<br><img.*?>/g, '').replace(/<br>/g, '\n');
                     const imgMatch = entry.text.match(/<img.*?src="(.*?)"/);
                     if (imgMatch) {
                         document.getElementById('viewImage').value = ''; // Clear the file input
-                        // Store the existing image URL to show in the editor if needed
-                        entry.existingImageUrl = imgMatch[1];
+                        entry.existingImageUrl = imgMatch[1]; // Store the existing image URL to show in the editor if needed
                     } else {
                         document.getElementById('viewImage').value = '';
                         delete entry.existingImageUrl;
@@ -469,6 +478,7 @@
     </script>
 </body>
 </html>
+
 
 
 
