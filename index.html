@@ -157,6 +157,7 @@
             border: 1px solid #ddd;
             width: 100%;
             box-sizing: border-box;
+            display: none; /* Hide by default */
         }
         .comment-toggle-btn {
             margin-top: 10px;
@@ -175,7 +176,7 @@
     </nav>
     <div id="home" class="container show">
         <div class="headline">
-            <h1>I am happy to know that I am curious.</h1>
+            <h1>I know almost nothing is only think I know.</h1>
         </div>
     </div>
     <div id="projects" class="container">
@@ -242,6 +243,7 @@
             });
             document.getElementById(sectionId).classList.add('show');
             discardUnsavedComments();
+            hideContentDisplay(); // Hide the content-display when switching sections
         }
 
         function showEditor(type) {
@@ -341,7 +343,7 @@
                 const updatedEntries = entries.filter(entry => entry.id !== id);
                 localStorage.setItem(type + 's', JSON.stringify(updatedEntries));
                 loadEntries();
-                hideContentDisplay();
+                hideContentDisplay(); // Hide content display after deleting an entry
             } else {
                 alert("Incorrect password. You are not authorized to delete content.");
             }
@@ -483,9 +485,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
