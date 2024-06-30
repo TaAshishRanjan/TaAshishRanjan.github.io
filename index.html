@@ -341,6 +341,7 @@
                 const updatedEntries = entries.filter(entry => entry.id !== id);
                 localStorage.setItem(type + 's', JSON.stringify(updatedEntries));
                 loadEntries();
+                hideContentDisplay();
             } else {
                 alert("Incorrect password. You are not authorized to delete content.");
             }
@@ -474,10 +475,15 @@
             document.getElementById('comment-section').style.display = 'none';
         }
 
+        function hideContentDisplay() {
+            document.getElementById('content-display').style.display = 'none';
+        }
+
         document.addEventListener('DOMContentLoaded', loadEntries);
     </script>
 </body>
 </html>
+
 
 
 
