@@ -491,12 +491,19 @@
         }
 
         function loadEntries() {
+            console.log('Loading entries...');
             document.getElementById('project-entries').innerHTML = '';
             document.getElementById('view-entries').innerHTML = '';
             const projects = JSON.parse(localStorage.getItem('projects')) || [];
-            projects.forEach(addProjectEntry);
+            projects.forEach(project => {
+                console.log('Adding project:', project);
+                addProjectEntry(project);
+            });
             const views = JSON.parse(localStorage.getItem('views')) || [];
-            views.forEach(addViewEntry);
+            views.forEach(view => {
+                console.log('Adding view:', view);
+                addViewEntry(view);
+            });
         }
 
         function discardUnsavedComments() {
