@@ -188,7 +188,7 @@
 
     // ===== Rendering Lists =====
     function renderList(type){ const cont = type==='project' ? $('#project-entries') : $('#view-entries'); const arr=listEntries(type); cont.innerHTML=''; (type==='project'?$('#projCount'):$('#viewCount')).textContent = arr.length + ' ' + (arr.length===1?'entry':'entries'); arr.forEach(e=> cont.appendChild(renderListItem(e, type)) ); }
-    function renderListItem(entry,type){ const div=document.createElement('div'); div.className='entry card'; const href = `#/${type}/${encodeURIComponent(entry.slug)}-${entry.id}`; div.innerHTML = `<div class="row"><a href="${href}">${entry.title}</a><span class="right meta">${fmtDate(entry.updatedAt)}</span></div><div class="meta">#${type} • <span class="tag">/${entry.slug}</span></div><div class="actions ${editorUnlocked?'':'hidden'}"><button onclick="editEntry('${entry.id}','${type}')">Edit</button><button onclick="deleteEntry('${entry.id}','${type}')">Delete</button></div>`; return div; }
+    function renderListItem(entry,type){ const div=document.createElement('div'); div.className='entry card'; const href = `#/${type}/${encodeURIComponent(entry.slug)}-${entry.id}`; const label = type==='project' ? 'Project' : 'View'; const displaySlug = (entry.slug||'').replace(/-[^-]+$/, ''); div.innerHTML = `<div class="row"><a href="${href}">${entry.title}</a><span class="right meta">${fmtDate(entry.updatedAt)}</span></div><div class="meta">${label} • <span class="tag">/${displaySlug}</span></div><div class="actions ${editorUnlocked?'':'hidden'}"><button onclick=\"editEntry('${entry.id}','${type}')\">Edit</button><button onclick=\"deleteEntry('${entry.id}','${type}')\">Delete</button></div>`; return div; }
 
     // ===== Editors =====
     function clearEditors(){ $('#projectTitle').value=''; $('#projectText').value=''; $('#projectImage').value=''; $('#viewTitle').value=''; $('#myViewText').value=''; $('#viewImage').value=''; }
@@ -204,7 +204,9 @@
     function editEntry(id,type){ openEditor(type,id); }
 
     // ===== View Entry =====
-    function openEntry(type,id){ const e=getEntry(type,id); if(!e) return; current={type,id}; $('#content-title').textContent = e.title; $('#content-meta').textContent = `${type} • created ${fmtDate(e.createdAt)} • updated ${fmtDate(e.updatedAt)} • /${e.slug}`; $('#content-text').innerHTML = sanitizeHTML(e.text); $('#comments-list').innerHTML=''; (e.comments||[]).forEach(c=> addCommentToList(c)); $('#commentText').value=''; showSection('content-display'); }
+    function openEntry(type,id){ const e=getEntry(type,id); if(!e) return; current={type,id}; $('#content-title').textContent = e.title; const label = e.type==='project' ? 'Project' : 'View';
+const displaySlug = (e.slug||'').replace(/-[^-]+$/, '');
+$('#content-meta').textContent = `${label} • created ${fmtDate(e.createdAt)} • updated ${fmtDate(e.updatedAt)} • /${displaySlug}`; $('#content-text').innerHTML = sanitizeHTML(e.text); $('#comments-list').innerHTML=''; (e.comments||[]).forEach(c=> addCommentToList(c)); $('#commentText').value=''; showSection('content-display'); }
 
     function addCommentToList(text){ const div=document.createElement('div'); div.className='card'; div.textContent = text; $('#comments-list').appendChild(div); }
 
