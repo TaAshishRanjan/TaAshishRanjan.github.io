@@ -1,521 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ashish Ranjan</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f0f8ff;
-        }
-        header {
-            background-color: #4CAF50;
-            padding: 20px;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: white;
-        }
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            background-color: #333;
-        }
-        nav a {
-            padding: 14px 20px;
-            display: block;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            flex: 1;
-        }
-        nav a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        .container {
-            display: none;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 20px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .container.show {
-            display: flex;
-        }
-        .headline {
-            font-size: 20px;
-            margin-top: 20px;
-        }
-        .contact-info {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-        .contact-info a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        .contact-info a:hover {
-            text-decoration: underline;
-        }
-        .my-view, .projects {
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            border: 1px solid #ddd;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .my-view textarea, .projects textarea {
-            width: 100%;
-            height: 100px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        .my-view input[type="text"], .projects input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        .my-view button, .projects button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .my-view button:hover, .projects button:hover {
-            background-color: #45a049;
-        }
-        .my-view .entries, .projects .entries {
-            margin-top: 20px;
-        }
-        .entry {
-            margin-bottom: 10px;
-        }
-        .entry a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        .entry a:hover {
-            text-decoration: underline;
-        }
-        .entry-options {
-            display: inline;
-            margin-left: 10px;
-            font-size: 12px;
-            color: #888;
-        }
-        .entry-options button {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
-            padding: 0;
-            margin: 0 5px;
-        }
-        .entry-comments {
-            margin-top: 10px;
-            padding-left: 20px;
-        }
-        .entry-comments textarea {
-            width: 100%;
-            height: 100px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        .entry-comments button {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .entry-comments button:hover {
-            background-color: #45a049;
-        }
-        .content-display {
-            margin-top: 20px;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #ddd;
-            width: 100%;
-            box-sizing: border-box;
-            display: none; /* Hide by default */
-        }
-        .comment-toggle-btn {
-            margin-top: 10px;
-        }
-
-        @media (max-width: 600px) {
-            nav {
-                flex-direction: column;
-            }
-            nav a {
-                flex: none;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .headline {
-                font-size: 18px;
-            }
-            .contact-info {
-                font-size: 16px;
-            }
-            .my-view textarea, .projects textarea, .my-view input[type="text"], .projects input[type="text"] {
-                font-size: 14px;
-            }
-            .my-view button, .projects button {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-            .entry-comments textarea {
-                font-size: 12px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ashish Ranjan</title>
+  <style>
+    :root{
+      --bg:#f0f8ff; --ink:#0f1b2d; --muted:#d8e6ff; --brand:#4CAF50; --brand-ink:#ffffff; --card:#ffffff; --border:#d9dee8;
+    }
+    @media (prefers-color-scheme:dark){ :root{ --bg:#0f1220; --ink:#e7eeff; --muted:#1b1f35; --brand:#61d271; --brand-ink:#00150b; --card:#151832; --border:#262b4b; } }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    header{background:var(--brand);padding:14px 16px;text-align:center;color:var(--brand-ink);position:sticky;top:0;z-index:5}
+    header h1{margin:0;font-size:22px}
+    nav{display:flex;flex-wrap:wrap;justify-content:center;background:#333}
+    nav a, nav button{padding:12px 16px;color:#fff;border:0;background:transparent;text-decoration:none;cursor:pointer}
+    nav a:hover, nav button:hover{background:#ddd;color:#000}
+    .wrap{max-width:980px;margin:0 auto;padding:16px}
+    .container{display:none;flex-direction:column;align-items:flex-start;width:100%}
+    .container.show{display:flex}
+    .card{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}
+    h2{margin:0 0 10px 0}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
+    input[type="text"], textarea, input[type="file"]{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff;color:#111}
+    textarea{min-height:120px}
+    .entry{margin:8px 0}
+    .entry a{color:var(--brand);text-decoration:none;font-weight:600}
+    .entry .meta{font-size:12px;color:#666}
+    .entry .actions button{background:transparent;border:0;color:#666;cursor:pointer;margin-left:8px}
+    .content-display{display:none}
+    .tag{display:inline-block;font-size:12px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;margin-right:6px;color:#666}
+    .muted{color:#666}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .right{margin-left:auto}
+    .hidden{display:none!important}
+    img.content-img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:8px}
+    @media (max-width:640px){ header h1{font-size:18px} }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Ashish Ranjan</h1>
-    </header>
-    <nav>
-        <a onclick="showSection('home')">Home</a>
-        <a onclick="showSection('projects')">Technical Projects</a>
-        <a onclick="showSection('my-view')">My View</a>
-        <a onclick="showSection('contact')">Contact</a>
-    </nav>
-    <div id="home" class="container show">
-        <div class="headline">
-            <h1>I know almost nothing is the only think I know.</h1>
+  <header><h1>Ashish Ranjan</h1></header>
+  <nav>
+    <a href="#/home">Home</a>
+    <a href="#/projects">Technical Projects</a>
+    <a href="#/views">My View</a>
+    <a href="#/contact">Contact</a>
+    <span class="right"></span>
+    <button id="unlockBtn" title="Unlock editing">🔓 Unlock</button>
+    <button id="lockBtn" class="hidden" title="Lock editing">🔒 Lock</button>
+    <button id="exportBtn" title="Export your data">Export</button>
+    <label class="btn" style="margin:6px" for="importFile">Import<input id="importFile" class="hidden" type="file" accept="application/json"/></label>
+  </nav>
+
+  <div class="wrap">
+    <section id="home" class="container show">
+      <div class="card"><h2>Home</h2>
+        <p class="muted">“I know almost nothing is the only thing I know.”</p>
+        <p>Welcome to my notes: technical projects, personal views, and experiments. Everything here is a living draft.</p>
+      </div>
+    </section>
+
+    <section id="projects" class="container">
+      <div class="card">
+        <div class="row"><h2>Technical Projects</h2><span class="right muted" id="projCount"></span></div>
+        <div id="project-editor" class="card hidden">
+          <input type="text" id="projectTitle" placeholder="Project title" />
+          <textarea id="projectText" placeholder="Write your project details here… (basic HTML allowed: line breaks, one image)"></textarea>
+          <input type="file" id="projectImage" accept="image/*" />
+          <div class="controls">
+            <button class="btn" id="saveProjectBtn">Save Project</button>
+            <button class="btn ghost" id="cancelProjectBtn">Cancel</button>
+          </div>
         </div>
-    </div>
-    <div id="projects" class="container">
-        <div class="headline">
-            <h1>Technical Projects</h1>
+        <div class="controls" id="projectControls">
+          <button class="btn" id="newProjectBtn">Create New Project</button>
         </div>
-        <div class="projects">
-            <button onclick="showEditor('project')">Create New Project</button>
-            <div id="project-editor" style="display:none;">
-                <input type="text" id="projectTitle" placeholder="Project Title">
-                <textarea id="projectText" placeholder="Write your project details here..."></textarea>
-                <input type="file" id="projectImage" accept="image/*">
-                <button onclick="saveProject()">Save Project</button>
-            </div>
-            <div class="entries" id="project-entries">
-                <!-- Project entries will be dynamically added here -->
-            </div>
+        <div id="project-entries" class="grid"></div>
+      </div>
+    </section>
+
+    <section id="views" class="container">
+      <div class="card">
+        <div class="row"><h2>My View</h2><span class="right muted" id="viewCount"></span></div>
+        <div id="view-editor" class="card hidden">
+          <input type="text" id="viewTitle" placeholder="View title" />
+          <textarea id="myViewText" placeholder="Write your thoughts here… (basic HTML allowed: line breaks, one image)"></textarea>
+          <input type="file" id="viewImage" accept="image/*" />
+          <div class="controls">
+            <button class="btn" id="saveViewBtn">Save View</button>
+            <button class="btn ghost" id="cancelViewBtn">Cancel</button>
+          </div>
         </div>
-    </div>
-    <div id="my-view" class="container">
-        <div class="my-view">
-            <button onclick="showEditor('view')">Create New View</button>
-            <div id="view-editor" style="display:none;">
-                <input type="text" id="viewTitle" placeholder="View Title">
-                <textarea id="myViewText" placeholder="Write your thoughts here..."></textarea>
-                <input type="file" id="viewImage" accept="image/*">
-                <button onclick="saveMyView()">Save View</button>
-            </div>
-            <div class="entries" id="view-entries">
-                <!-- View entries will be dynamically added here -->
-            </div>
+        <div class="controls" id="viewControls">
+          <button class="btn" id="newViewBtn">Create New View</button>
         </div>
-    </div>
-    <div id="contact" class="container">
-        <div class="contact-info">
-            <p>Contact me:</p>
-            <p>Email: <a href="mailto:bi.ashishr@gmail.com">bi.ashishr@gmail.com</a></p>
-            <p>LinkedIn: <a href="https://www.linkedin.com/in/ashish-ranjan173" target="_blank">ashish-ranjan173</a></p>
-            <p>Instagram: <a href="https://www.instagram.com/ashish_ranjan87?igsh=MWlpeWo3cHJuaGlvbg==" target="_blank">ashish_ranjan87</a></p>
-            <!-- Add more links as needed -->
-        </div>
-    </div>
-    <div id="content-display" class="container content-display">
+        <div id="view-entries" class="grid"></div>
+      </div>
+    </section>
+
+    <section id="contact" class="container">
+      <div class="card">
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:bi.ashishr@gmail.com">bi.ashishr@gmail.com</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/ashish-ranjan173" target="_blank">ashish-ranjan173</a></p>
+        <p>Instagram: <a href="https://www.instagram.com/ashish_ranjan87?igsh=MWlpeWo3cHJuaGlvbg==" target="_blank">ashish_ranjan87</a></p>
+      </div>
+    </section>
+
+    <section id="content-display" class="container content-display">
+      <div class="card">
         <h2 id="content-title"></h2>
-        <div id="content-text"></div>
-        <div id="comment-section">
-            <textarea id="commentText" placeholder="Add a comment..."></textarea>
-            <button onclick="saveComment()" class="comment-toggle-btn">Submit Comment</button>
-            <div id="comments-list">
-                <!-- Comments will be dynamically added here -->
-            </div>
+        <div class="muted" id="content-meta"></div>
+        <div id="content-text" style="margin-top:8px"></div>
+        <div id="comment-section" class="card" style="margin-top:12px">
+          <h3>Comments</h3>
+          <div id="comments-list"></div>
+          <textarea id="commentText" placeholder="Add a comment…"></textarea>
+          <div class="controls">
+            <button class="btn" id="submitCommentBtn">Submit Comment</button>
+            <button class="btn ghost" id="toggleCommentBtn">Hide</button>
+          </div>
         </div>
-        <button onclick="toggleCommentSection()" class="comment-toggle-btn">Add a Comment</button>
-    </div>
-    <script>
-        const password = "Asarfi@Chuski"; // Set your password here
-        let currentEntryId = null;
-        let currentEntryType = null;
+      </div>
+    </section>
+  </div>
 
-        function showSection(sectionId) {
-            const sections = document.querySelectorAll('.container');
-            sections.forEach(section => {
-                section.classList.remove('show');
-            });
-            document.getElementById(sectionId).classList.add('show');
-            discardUnsavedComments();
-            hideContentDisplay(); // Hide the content-display when switching sections
+  <script>
+    // ===== Configuration =====
+    const PASSWORD = "Asarfi@Chuski"; // simple gate; not secure for public editing
+
+    // ===== Utilities =====
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => document.querySelectorAll(sel);
+
+    function nowISO(){ return new Date().toISOString(); }
+    function fmtDate(iso){ try{ return new Date(iso).toLocaleString(); }catch(e){ return iso; } }
+    function uid(){ return Date.now() + '-' + Math.random().toString(36).slice(2,7); }
+    function slugify(str){ return (str||'').toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,60) || 'untitled'; }
+
+    // Very small sanitizer to keep BR/IMG and text; strip scripts/attrs
+    function sanitizeHTML(dirty){
+      if(!dirty) return "";
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(String(dirty), 'text/html');
+      doc.querySelectorAll('script, iframe, embed, object, link, style').forEach(n=>n.remove());
+      const allowed = new Set(['BR','IMG','P','#text']);
+      doc.body.querySelectorAll('*').forEach(el=>{
+        if(!allowed.has(el.nodeName)){
+          const p = doc.createElement('p');
+          p.textContent = el.textContent; el.replaceWith(p); return;
         }
+        [...el.attributes].forEach(attr=>{
+          const ok = el.nodeName==='IMG' && (attr.name==='src' || attr.name==='alt');
+          if(!ok) el.removeAttribute(attr.name);
+        });
+      });
+      return doc.body.innerHTML;
+    }
 
-        function showEditor(type) {
-            const userPassword = prompt("Enter the password to create content:");
-            if (userPassword === password) {
-                if (type === 'project') {
-                    document.getElementById('project-editor').style.display = 'block';
-                    document.getElementById('view-editor').style.display = 'none';
-                } else if (type === 'view') {
-                    document.getElementById('view-editor').style.display = 'block';
-                    document.getElementById('project-editor').style.display = 'none';
-                }
-                currentEntryId = null; // Reset currentEntryId to ensure a new entry is being created
-            } else {
-                alert("Incorrect password. You are not authorized to create content.");
-            }
-        }
+    // ===== Storage (localStorage) =====
+    const DB_KEY = 'ar_site_db_v2';
+    function loadDB(){ try{ return JSON.parse(localStorage.getItem(DB_KEY)) || {projects:[], views:[]}; }catch(e){ return {projects:[], views:[]}; } }
+    function saveDB(db){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
 
-        function saveProject() {
-            const projectTitle = document.getElementById('projectTitle').value;
-            const projectText = document.getElementById('projectText').value;
-            const projectImage = document.getElementById('projectImage').files[0];
+    // Export/Import
+    function exportJSON(){ const data = { exportedAt: nowISO(), db: loadDB() }; const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ashish-site-export.json'; a.click(); URL.revokeObjectURL(a.href); }
+    function importJSON(file){ const reader=new FileReader(); reader.onload=()=>{ try{ const parsed=JSON.parse(reader.result); if(!parsed.db) throw new Error('Invalid format'); saveDB(parsed.db); renderAll(); alert('Import complete.'); }catch(e){ alert('Import failed: '+e.message); } }; reader.readAsText(file); }
 
-            if (projectTitle.trim() !== '' && projectText.trim() !== '') {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageDataUrl = e.target.result;
-                    const content = projectText.replace(/\n/g, '<br>') + (projectImage ? `<br><img src="${imageDataUrl}" alt="Project Image">` : '');
-                    const projects = JSON.parse(localStorage.getItem('projects')) || [];
-                    const project = projects.find(p => p.id === currentEntryId);
-                    if (project) {
-                        // Update existing project
-                        project.title = projectTitle;
-                        project.text = content;
-                    } else {
-                        // Create new project
-                        const newProject = { id: Date.now(), title: projectTitle, text: content, comments: [] };
-                        projects.push(newProject);
-                    }
-                    localStorage.setItem('projects', JSON.stringify(projects));
-                    loadEntries();
-                    document.getElementById('projectTitle').value = '';
-                    document.getElementById('projectText').value = '';
-                    document.getElementById('projectImage').value = '';
-                    document.getElementById('project-editor').style.display = 'none';
-                    currentEntryId = null;
-                };
-                if (projectImage) {
-                    reader.readAsDataURL(projectImage);
-                } else {
-                    reader.onload({ target: { result: '' } });
-                }
-            }
-        }
+    // ===== App State =====
+    let editorUnlocked = false; // controls visibility of create/edit/delete
+    let current = { type:null, id:null }; // currently viewed entry
 
-        function saveMyView() {
-            const viewTitle = document.getElementById('viewTitle').value;
-            const myViewText = document.getElementById('myViewText').value;
-            const viewImage = document.getElementById('viewImage').files[0];
+    function lockEditing(){ editorUnlocked=false; toggleEditorUI(); }
+    function unlockEditing(){ const pwd = prompt('Enter password to unlock editing:'); if(pwd===PASSWORD){ editorUnlocked=true; } else { alert('Incorrect password.'); } toggleEditorUI(); }
+    function toggleEditorUI(){ $('#unlockBtn').classList.toggle('hidden', editorUnlocked); $('#lockBtn').classList.toggle('hidden', !editorUnlocked); $('#projectControls').classList.toggle('hidden', !editorUnlocked); $('#viewControls').classList.toggle('hidden', !editorUnlocked); // hide editors if locking
+      if(!editorUnlocked){ $('#project-editor').classList.add('hidden'); $('#view-editor').classList.add('hidden'); } }
 
-            if (viewTitle.trim() !== '' && myViewText.trim() !== '') {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageDataUrl = e.target.result;
-                    const content = myViewText.replace(/\n/g, '<br>') + (viewImage ? `<br><img src="${imageDataUrl}" alt="View Image">` : '');
-                    const views = JSON.parse(localStorage.getItem('views')) || [];
-                    const view = views.find(v => v.id === currentEntryId);
-                    if (view) {
-                        // Update existing view
-                        view.title = viewTitle;
-                        view.text = content;
-                    } else {
-                        // Create new view
-                        const newView = { id: Date.now(), title: viewTitle, text: content, comments: [] };
-                        views.push(newView);
-                    }
-                    localStorage.setItem('views', JSON.stringify(views));
-                    loadEntries();
-                    document.getElementById('viewTitle').value = '';
-                    document.getElementById('myViewText').value = '';
-                    document.getElementById('viewImage').value = '';
-                    document.getElementById('view-editor').style.display = 'none';
-                    currentEntryId = null;
-                };
-                if (viewImage) {
-                    reader.readAsDataURL(viewImage);
-                } else {
-                    reader.onload({ target: { result: '' } });
-                }
-            }
-        }
+    // ===== CRUD helpers =====
+    function upsertEntry(type, entry){ const db=loadDB(); const arr=db[type+'s']; const i=arr.findIndex(e=>e.id===entry.id); if(i>=0) arr[i]=entry; else arr.unshift(entry); saveDB(db); return entry; }
+    function deleteEntry(id, type){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } if(confirm('Delete this entry?')){ const db=loadDB(); db[type+'s']=db[type+'s'].filter(e=>e.id!==id); saveDB(db); renderAll(); if(current.id===id){ hideContentDisplay(); } } }
+    function listEntries(type){ return loadDB()[type+'s']; }
+    function getEntry(type,id){ return listEntries(type).find(e=>e.id===id); }
 
-        function deleteEntry(id, type) {
-            const userPassword = prompt("Enter the password to delete content:");
-            if (userPassword === password) {
-                const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
-                const updatedEntries = entries.filter(entry => entry.id !== id);
-                localStorage.setItem(type + 's', JSON.stringify(updatedEntries));
-                loadEntries();
-                hideContentDisplay(); // Hide content display after deleting an entry
-            } else {
-                alert("Incorrect password. You are not authorized to delete content.");
-            }
-        }
+    // ===== Rendering Lists =====
+    function renderList(type){ const cont = type==='project' ? $('#project-entries') : $('#view-entries'); const arr=listEntries(type); cont.innerHTML=''; (type==='project'?$('#projCount'):$('#viewCount')).textContent = arr.length + ' ' + (arr.length===1?'entry':'entries'); arr.forEach(e=> cont.appendChild(renderListItem(e, type)) ); }
+    function renderListItem(entry,type){ const div=document.createElement('div'); div.className='entry card'; const href = `#/${type}/${encodeURIComponent(entry.slug)}-${entry.id}`; div.innerHTML = `<div class="row"><a href="${href}">${entry.title}</a><span class="right meta">${fmtDate(entry.updatedAt)}</span></div><div class="meta">#${type} • <span class="tag">/${entry.slug}</span></div><div class="actions ${editorUnlocked?'':'hidden'}"><button onclick="editEntry('${entry.id}','${type}')">Edit</button><button onclick="deleteEntry('${entry.id}','${type}')">Delete</button></div>`; return div; }
 
-        function editEntry(id, type) {
-            const userPassword = prompt("Enter the password to edit content:");
-            if (userPassword === password) {
-                const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
-                const entry = entries.find(e => e.id === id);
-                currentEntryId = id;
-                if (type === 'project') {
-                    document.getElementById('projectTitle').value = entry.title;
-                    document.getElementById('projectText').value = entry.text.replace(/<br><img.*?>/g, '').replace(/<br>/g, '\n');
-                    const imgMatch = entry.text.match(/<img.*?src="(.*?)"/);
-                    if (imgMatch) {
-                        document.getElementById('projectImage').value = ''; // Clear the file input
-                        entry.existingImageUrl = imgMatch[1]; // Store the existing image URL to show in the editor if needed
-                    } else {
-                        document.getElementById('projectImage').value = '';
-                        delete entry.existingImageUrl;
-                    }
-                    document.getElementById('project-editor').style.display = 'block';
-                } else if (type === 'view') {
-                    document.getElementById('viewTitle').value = entry.title;
-                    document.getElementById('myViewText').value = entry.text.replace(/<br><img.*?>/g, '').replace(/<br>/g, '\n');
-                    const imgMatch = entry.text.match(/<img.*?src="(.*?)"/);
-                    if (imgMatch) {
-                        document.getElementById('viewImage').value = ''; // Clear the file input
-                        entry.existingImageUrl = imgMatch[1]; // Store the existing image URL to show in the editor if needed
-                    } else {
-                        document.getElementById('viewImage').value = '';
-                        delete entry.existingImageUrl;
-                    }
-                    document.getElementById('view-editor').style.display = 'block';
-                }
-            } else {
-                alert("Incorrect password. You are not authorized to edit content.");
-            }
-        }
+    // ===== Editors =====
+    function clearEditors(){ $('#projectTitle').value=''; $('#projectText').value=''; $('#projectImage').value=''; $('#viewTitle').value=''; $('#myViewText').value=''; $('#viewImage').value=''; }
 
-        function addProjectEntry(project) {
-            const entry = document.createElement('div');
-            entry.className = 'entry';
-            entry.innerHTML = `
-                <a href="#" onclick="viewEntry(${project.id}, 'project')">${project.title}</a>
-                <span class="entry-options">
-                    <button onclick="editEntry(${project.id}, 'project')">Edit</button>
-                    <button onclick="deleteEntry(${project.id}, 'project')">Delete</button>
-                </span>
-            `;
-            document.getElementById('project-entries').appendChild(entry);
-        }
+    function openEditor(type, id=null){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } clearEditors(); current={type,id}; if(type==='project'){ $('#view-editor').classList.add('hidden'); $('#project-editor').classList.remove('hidden'); if(id){ const e=getEntry('project',id); $('#projectTitle').value=e.title; $('#projectText').value=e.rawText||e.text?.replace(/<br>/g,'\n').replace(/<img.*?>/g,''); } } else { $('#project-editor').classList.add('hidden'); $('#view-editor').classList.remove('hidden'); if(id){ const e=getEntry('view',id); $('#viewTitle').value=e.title; $('#myViewText').value=e.rawText||e.text?.replace(/<br>/g,'\n').replace(/<img.*?>/g,''); } } }
 
-        function addViewEntry(view) {
-            const entry = document.createElement('div');
-            entry.className = 'entry';
-            entry.innerHTML = `
-                <a href="#" onclick="viewEntry(${view.id}, 'view')">${view.title}</a>
-                <span class="entry-options">
-                    <button onclick="editEntry(${view.id}, 'view')">Edit</button>
-                    <button onclick="deleteEntry(${view.id}, 'view')">Delete</button>
-                </span>
-            `;
-            document.getElementById('view-entries').appendChild(entry);
-        }
+    function saveProject(){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } const title=$('#projectTitle').value.trim(); const raw=$('#projectText').value; const file=$('#projectImage').files[0]; if(!title || !raw){ alert('Title and text are required.'); return; } const finalize=(imageDataUrl)=>{ const id=current.id || uid(); const slug=slugify(title) + '-' + id.slice(-5); const content = raw.replace(/\n/g,'<br>') + (imageDataUrl?`<br><img class="content-img" src="${imageDataUrl}" alt="Project Image">`:""); const entry={ id, type:'project', title, slug, text: content, rawText: raw, createdAt: current.id? getEntry('project',current.id).createdAt : nowISO(), updatedAt: nowISO(), comments: current.id? getEntry('project',current.id).comments||[] : [] }; upsertEntry('project', entry); renderAll(); location.hash = `#/project/${encodeURIComponent(entry.slug)}-${entry.id}`; openEntry('project', entry.id); $('#project-editor').classList.add('hidden'); };
+      if(file){ const reader=new FileReader(); reader.onload = e=> finalize(e.target.result); reader.readAsDataURL(file); } else { finalize(""); } }
 
-        function viewEntry(id, type) {
-            currentEntryId = id;
-            currentEntryType = type;
-            const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
-            const entry = entries.find(e => e.id === id);
-            if (entry) {
-                document.getElementById('content-title').textContent = entry.title;
-                document.getElementById('content-text').innerHTML = entry.text;
-                document.getElementById('content-display').style.display = 'block';
-                document.getElementById('comment-section').style.display = 'block';
-                loadComments(id, type);
-            }
-        }
+    function saveView(){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } const title=$('#viewTitle').value.trim(); const raw=$('#myViewText').value; const file=$('#viewImage').files[0]; if(!title || !raw){ alert('Title and text are required.'); return; } const finalize=(imageDataUrl)=>{ const id=current.id || uid(); const slug=slugify(title) + '-' + id.slice(-5); const content = raw.replace(/\n/g,'<br>') + (imageDataUrl?`<br><img class="content-img" src="${imageDataUrl}" alt="View Image">`:""); const entry={ id, type:'view', title, slug, text: content, rawText: raw, createdAt: current.id? getEntry('view',current.id).createdAt : nowISO(), updatedAt: nowISO(), comments: current.id? getEntry('view',current.id).comments||[] : [] }; upsertEntry('view', entry); renderAll(); location.hash = `#/view/${encodeURIComponent(entry.slug)}-${entry.id}`; openEntry('view', entry.id); $('#view-editor').classList.add('hidden'); };
+      if(file){ const reader=new FileReader(); reader.onload = e=> finalize(e.target.result); reader.readAsDataURL(file); } else { finalize(""); } }
 
-        function saveComment() {
-            const commentText = document.getElementById('commentText').value;
-            if (commentText.trim() !== '') {
-                const entries = JSON.parse(localStorage.getItem(currentEntryType + 's')) || [];
-                const entry = entries.find(e => e.id === currentEntryId);
-                entry.comments.push(commentText);
-                localStorage.setItem(currentEntryType + 's', JSON.stringify(entries));
-                addCommentToList(currentEntryId, commentText, currentEntryType);
-                document.getElementById('commentText').value = '';
-            }
-        }
+    function editEntry(id,type){ openEditor(type,id); }
 
-        function addCommentToList(id, commentText, type) {
-            const commentDiv = document.createElement('div');
-            commentDiv.textContent = commentText;
-            document.getElementById('comments-list').appendChild(commentDiv);
-        }
+    // ===== View Entry =====
+    function openEntry(type,id){ const e=getEntry(type,id); if(!e) return; current={type,id}; $('#content-title').textContent = e.title; $('#content-meta').textContent = `${type} • created ${fmtDate(e.createdAt)} • updated ${fmtDate(e.updatedAt)} • /${e.slug}`; $('#content-text').innerHTML = sanitizeHTML(e.text); $('#comments-list').innerHTML=''; (e.comments||[]).forEach(c=> addCommentToList(c)); $('#commentText').value=''; showSection('content-display'); }
 
-        function loadComments(id, type) {
-            const entries = JSON.parse(localStorage.getItem(type + 's')) || [];
-            const entry = entries.find(e => e.id === id);
-            const commentsList = document.getElementById('comments-list');
-            commentsList.innerHTML = '';
-            entry.comments.forEach(comment => {
-                addCommentToList(id, comment, type);
-            });
-        }
+    function addCommentToList(text){ const div=document.createElement('div'); div.className='card'; div.textContent = text; $('#comments-list').appendChild(div); }
 
-        function toggleCommentSection() {
-            const commentSection = document.getElementById('comment-section');
-            if (commentSection.style.display === 'none' || commentSection.style.display === '') {
-                commentSection.style.display = 'block';
-            } else {
-                commentSection.style.display = 'none';
-            }
-        }
+    function saveComment(){ const txt=$('#commentText').value.trim(); if(!txt){ return; } const e=getEntry(current.type,current.id); if(!e){ return; } e.comments = e.comments||[]; e.comments.push(txt); upsertEntry(current.type,e); addCommentToList(txt); $('#commentText').value=''; }
 
-        function loadEntries() {
-            console.log('Loading entries...');
-            document.getElementById('project-entries').innerHTML = '';
-            document.getElementById('view-entries').innerHTML = '';
-            const projects = JSON.parse(localStorage.getItem('projects')) || [];
-            projects.forEach(project => {
-                console.log('Adding project:', project);
-                addProjectEntry(project);
-            });
-            const views = JSON.parse(localStorage.getItem('views')) || [];
-            views.forEach(view => {
-                console.log('Adding view:', view);
-                addViewEntry(view);
-            });
-        }
+    // ===== Routing =====
+    function showSection(id){ $$('.container').forEach(s=> s.classList.remove('show')); $('#'+id).classList.add('show'); if(id!=='content-display'){ $('#commentText').value=''; } }
 
-        function discardUnsavedComments() {
-            document.getElementById('commentText').value = '';
-            document.getElementById('comment-section').style.display = 'none';
-        }
+    function handleHash(){ const h=location.hash || '#/home'; const parts=h.slice(2).split('/'); const page=parts[0]; if(page==='home' || page==='contact'){ showSection(page); return; } if(page==='projects'){ showSection('projects'); return; } if(page==='views'){ showSection('views'); return; } if(page==='project' || page==='view'){ const idPart = parts[1]||''; const id = idPart.split('-').slice(-2).join('-'); // our uid contains '-'
+      const type = page==='project'?'project':'view'; const e = getEntry(type,id); if(e){ openEntry(type,id); } else { // try to find by slug prefix
+        const arr=listEntries(type); const hit = arr.find(x=> (idPart.startsWith(encodeURIComponent(x.slug)) || idPart.startsWith(x.slug)) ); if(hit){ openEntry(type,hit.id); } else { showSection('home'); }
+      }
+      return; }
+      showSection('home'); }
 
-        function hideContentDisplay() {
-            document.getElementById('content-display').style.display = 'none';
-        }
+    window.addEventListener('hashchange', handleHash);
 
-        document.addEventListener('DOMContentLoaded', loadEntries);
-    </script>
+    // ===== Render =====
+    function renderAll(){ renderList('project'); renderList('view'); }
+
+    // ===== Events =====
+    $('#newProjectBtn').onclick = ()=> openEditor('project');
+    $('#newViewBtn').onclick = ()=> openEditor('view');
+    $('#saveProjectBtn').onclick = saveProject;
+    $('#cancelProjectBtn').onclick = ()=> $('#project-editor').classList.add('hidden');
+    $('#saveViewBtn').onclick = saveView;
+    $('#cancelViewBtn').onclick = ()=> $('#view-editor').classList.add('hidden');
+    $('#submitCommentBtn').onclick = saveComment;
+    $('#toggleCommentBtn').onclick = ()=>{ const el=$('#comment-section'); el.style.display = (el.style.display==='none'?'block':'none'); };
+    $('#exportBtn').onclick = exportJSON;
+    $('#importFile').onchange = e=> e.target.files[0] && importJSON(e.target.files[0]);
+    $('#unlockBtn').onclick = unlockEditing;
+    $('#lockBtn').onclick = lockEditing;
+
+    // ===== Boot =====
+    renderAll(); handleHash(); toggleEditorUI();
+  </script>
 </body>
 </html>
