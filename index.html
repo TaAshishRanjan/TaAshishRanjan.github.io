@@ -2,247 +2,485 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ashish Ranjan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ashish Ranjan — Synced Projects & Views</title>
   <style>
-    :root{
-      --bg:#f0f8ff; --ink:#0f1b2d; --muted:#d8e6ff; --brand:#4CAF50; --brand-ink:#ffffff; --card:#ffffff; --border:#d9dee8;
-    }
-    @media (prefers-color-scheme:dark){ :root{ --bg:#0f1220; --ink:#e7eeff; --muted:#1b1f35; --brand:#61d271; --brand-ink:#00150b; --card:#151832; --border:#262b4b; } }
+    :root{ --bg:#0f1220; --card:#151832; --muted:#22264a; --ink:#e7eeff; --sub:#9fb0d8; --brand:#61d271; --warn:#fbbf24; --danger:#fb7185; --border:#262b4b; }
+    [data-theme="light"]{ --bg:#f5f7ff; --card:#ffffff; --muted:#dfe6ff; --ink:#0f1b2d; --sub:#55607d; --brand:#2bbd6b; --warn:#a16207; --danger:#b91c1c; --border:#e4e8f4; }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-    header{background:var(--brand);padding:14px 16px;text-align:center;color:var(--brand-ink);position:sticky;top:0;z-index:5}
-    header h1{margin:0;font-size:22px}
-    nav{display:flex;flex-wrap:wrap;justify-content:center;background:#333}
-    nav a, nav button{padding:12px 16px;color:#fff;border:0;background:transparent;text-decoration:none;cursor:pointer}
-    nav a:hover, nav button:hover{background:#ddd;color:#000}
-    .wrap{max-width:980px;margin:0 auto;padding:16px}
-    .container{display:none;flex-direction:column;align-items:flex-start;width:100%}
-    .container.show{display:flex}
-    .card{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}
-    h2{margin:0 0 10px 0}
-    .controls{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer}
-    .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
-    input[type="text"], textarea, input[type="file"]{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff;color:#111}
-    textarea{min-height:120px}
-    .entry{margin:8px 0}
-    .entry a{color:var(--brand);text-decoration:none;font-weight:600}
-    .entry .meta{font-size:12px;color:#666}
-    .entry .actions button{background:transparent;border:0;color:#666;cursor:pointer;margin-left:8px}
-    .content-display{display:none}
-    .tag{display:inline-block;font-size:12px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;margin-right:6px;color:#666}
-    .muted{color:#666}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);z-index:5}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .right{margin-left:auto}
+    .btn{background:var(--brand);color:#031209;border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
+    .btn.small{padding:6px 10px;font-weight:600;border-radius:8px}
+    nav{display:flex;gap:10px;align-items:center}
+    nav a{color:var(--ink);text-decoration:none;padding:10px 12px;border-radius:10px}
+    nav a.active, nav a:hover{background:var(--muted)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:14px}
+    input[type="text"], input[type="email"], textarea, input[type="file"]{width:100%;padding:10px;border:1px solid var(--border);background:transparent;color:var(--ink);border-radius:10px}
+    textarea{min-height:120px}
     .hidden{display:none!important}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+    .entry.card{padding:14px}
+    .entry a{color:var(--brand);text-decoration:none;font-weight:700}
+    .meta{font-size:12px;color:var(--sub)}
+    .tag{display:inline-block;border:1px solid var(--border);padding:2px 8px;border-radius:999px;color:var(--sub);font-size:12px}
     img.content-img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:8px}
-    @media (max-width:640px){ header h1{font-size:18px} }
+    .pill{background:var(--muted);color:var(--sub);padding:3px 8px;border-radius:999px;font-size:12px}
   </style>
 </head>
 <body>
-  <header><h1>Ashish Ranjan</h1></header>
-  <nav>
-    <a href="#/home">Home</a>
-    <a href="#/projects">Technical Projects</a>
-    <a href="#/views">My View</a>
-    <a href="#/contact">Contact</a>
-    <span class="right"></span>
-    <button id="unlockBtn" title="Unlock editing">🔓 Unlock</button>
-    <button id="lockBtn" class="hidden" title="Lock editing">🔒 Lock</button>
-    <button id="exportBtn" title="Export your data">Export</button>
-    <label class="btn" style="margin:6px" for="importFile">Import<input id="importFile" class="hidden" type="file" accept="application/json"/></label>
-  </nav>
+  <header>
+    <div class="wrap row">
+      <div class="row">
+        <strong>Ashish Ranjan</strong>
+        <span class="pill" id="env-pill">Supabase</span>
+      </div>
+      <nav class="right">
+        <a href="#/home" id="link-home">Home</a>
+        <a href="#/projects" id="link-projects">Technical Projects</a>
+        <a href="#/views" id="link-views">My View</a>
+        <a href="#/contact" id="link-contact">Contact</a>
+      </nav>
+    </div>
+  </header>
 
   <div class="wrap">
-    <section id="home" class="container show">
-      <div class="card"><h2>Home</h2>
-        <p class="muted">“I know almost nothing is the only thing I know.”</p>
-        <p>Welcome to my notes: technical projects, personal views, and experiments. Everything here is a living draft.</p>
-      </div>
-    </section>
-
-    <section id="projects" class="container">
-      <div class="card">
-        <div class="row"><h2>Technical Projects</h2><span class="right muted" id="projCount"></span></div>
-        <div id="project-editor" class="card hidden">
-          <input type="text" id="projectTitle" placeholder="Project title" />
-          <textarea id="projectText" placeholder="Write your project details here… (basic HTML allowed: line breaks, one image)"></textarea>
-          <input type="file" id="projectImage" accept="image/*" />
-          <div class="controls">
-            <button class="btn" id="saveProjectBtn">Save Project</button>
-            <button class="btn ghost" id="cancelProjectBtn">Cancel</button>
+    <section id="home" class="card">
+      <h2>Home</h2>
+      <p class="meta">“I know almost nothing is the only thing I know.”</p>
+      <p>Now synced across devices. Sign in to create or edit.</p>
+      <div id="auth" class="card">
+        <div class="row"><h3>Sign in</h3><span class="right meta" id="auth-status">Signed out</span></div>
+        <div id="auth-signed-out">
+          <label>Email (for magic link)</label>
+          <input type="email" id="email" placeholder="you@example.com" />
+          <div class="row" style="margin-top:8px">
+            <button class="btn" id="loginBtn">Send magic link</button>
+            <button class="btn ghost" id="usePasswordBtn">Use password</button>
+          </div>
+          <div id="passwordBox" class="hidden" style="margin-top:8px">
+            <input type="password" id="password" placeholder="Password" />
+            <button class="btn small" id="loginPwdBtn">Sign in</button>
+          </div>
+          <p class="meta">After clicking magic link in your email, return to this page signed in.</p>
+        </div>
+        <div id="auth-signed-in" class="hidden">
+          <div class="row">
+            <span id="user-email" class="pill"></span>
+            <button class="btn small" id="logoutBtn">Sign out</button>
           </div>
         </div>
-        <div class="controls" id="projectControls">
-          <button class="btn" id="newProjectBtn">Create New Project</button>
-        </div>
-        <div id="project-entries" class="grid"></div>
       </div>
     </section>
 
-    <section id="views" class="container">
-      <div class="card">
-        <div class="row"><h2>My View</h2><span class="right muted" id="viewCount"></span></div>
-        <div id="view-editor" class="card hidden">
-          <input type="text" id="viewTitle" placeholder="View title" />
-          <textarea id="myViewText" placeholder="Write your thoughts here… (basic HTML allowed: line breaks, one image)"></textarea>
-          <input type="file" id="viewImage" accept="image/*" />
-          <div class="controls">
-            <button class="btn" id="saveViewBtn">Save View</button>
-            <button class="btn ghost" id="cancelViewBtn">Cancel</button>
-          </div>
+    <section id="projects" class="card hidden">
+      <div class="row"><h2>Technical Projects</h2><span class="right meta" id="projCount"></span></div>
+      <div id="project-editor" class="card hidden">
+        <input type="text" id="projectTitle" placeholder="Project title" />
+        <textarea id="projectText" placeholder="Write your project details here… (basic HTML allowed: line breaks, one image)"></textarea>
+        <input type="file" id="projectImage" accept="image/*" />
+        <div class="row">
+          <button class="btn" id="saveProjectBtn">Save Project</button>
+          <button class="btn ghost" id="cancelProjectBtn">Cancel</button>
         </div>
-        <div class="controls" id="viewControls">
-          <button class="btn" id="newViewBtn">Create New View</button>
-        </div>
-        <div id="view-entries" class="grid"></div>
       </div>
+      <div class="row" id="projectControls">
+        <button class="btn" id="newProjectBtn">Create New Project</button>
+        <button class="btn ghost" id="exportBtn">Export</button>
+        <label class="btn ghost" for="importFile">Import<input id="importFile" class="hidden" type="file" accept="application/json"/></label>
+      </div>
+      <div id="project-entries" class="grid"></div>
     </section>
 
-    <section id="contact" class="container">
-      <div class="card">
-        <h2>Contact</h2>
-        <p>Email: <a href="mailto:bi.ashishr@gmail.com">bi.ashishr@gmail.com</a></p>
-        <p>LinkedIn: <a href="https://www.linkedin.com/in/ashish-ranjan173" target="_blank">ashish-ranjan173</a></p>
-        <p>Instagram: <a href="https://www.instagram.com/ashish_ranjan87?igsh=MWlpeWo3cHJuaGlvbg==" target="_blank">ashish_ranjan87</a></p>
+    <section id="views" class="card hidden">
+      <div class="row"><h2>My View</h2><span class="right meta" id="viewCount"></span></div>
+      <div id="view-editor" class="card hidden">
+        <input type="text" id="viewTitle" placeholder="View title" />
+        <textarea id="myViewText" placeholder="Write your thoughts here… (basic HTML allowed: line breaks, one image)"></textarea>
+        <input type="file" id="viewImage" accept="image/*" />
+        <div class="row">
+          <button class="btn" id="saveViewBtn">Save View</button>
+          <button class="btn ghost" id="cancelViewBtn">Cancel</button>
+        </div>
       </div>
+      <div class="row" id="viewControls">
+        <button class="btn" id="newViewBtn">Create New View</button>
+      </div>
+      <div id="view-entries" class="grid"></div>
     </section>
 
-    <section id="content-display" class="container content-display">
-      <div class="card">
-        <h2 id="content-title"></h2>
-        <div class="muted" id="content-meta"></div>
-        <div id="content-text" style="margin-top:8px"></div>
-        <div id="comment-section" class="card" style="margin-top:12px">
-          <h3>Comments</h3>
-          <div id="comments-list"></div>
-          <textarea id="commentText" placeholder="Add a comment…"></textarea>
-          <div class="controls">
-            <button class="btn" id="submitCommentBtn">Submit Comment</button>
-            <button class="btn ghost" id="toggleCommentBtn">Hide</button>
-          </div>
+    <section id="contact" class="card hidden">
+      <h2>Contact</h2>
+      <p>Email: <a href="mailto:bi.ashishr@gmail.com">bi.ashishr@gmail.com</a></p>
+      <p>LinkedIn: <a href="https://www.linkedin.com/in/ashish-ranjan173" target="_blank">ashish-ranjan173</a></p>
+      <p>Instagram: <a href="https://www.instagram.com/ashish_ranjan87?igsh=MWlpeWo3cHJuaGlvbg==" target="_blank">ashish_ranjan87</a></p>
+    </section>
+
+    <section id="content-display" class="card hidden">
+      <h2 id="content-title"></h2>
+      <div class="meta" id="content-meta"></div>
+      <div id="content-text" style="margin-top:8px"></div>
+      <div class="card" style="margin-top:12px">
+        <h3>Comments</h3>
+        <div id="comments-list"></div>
+        <textarea id="commentText" placeholder="Add a comment…"></textarea>
+        <div class="row">
+          <input type="text" id="hp" class="hidden" autocomplete="off" />
+          <button class="btn" id="submitCommentBtn">Submit Comment</button>
+          <button class="btn ghost" id="toggleCommentBtn">Hide</button>
         </div>
       </div>
     </section>
   </div>
 
+  <!-- Supabase JS v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ===== Configuration =====
-    const PASSWORD = "Asarfi@Chuski"; // simple gate; not secure for public editing
+    // ========= 1) CONFIG: Fill these with your Supabase project values =========
+    const SUPABASE_URL = 'https://ajcynrtuntkmmayiuour.supabase.co'; // <-- replace
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqY3lucnR1bnRrbW1heWl1b3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDQ1OTYsImV4cCI6MjA3NDEyMDU5Nn0.vRnN7JobTokv8hf71pW4qCzO3IUBCmQJRcm312UUiww'; // <-- replace (public anon key)
 
-    // ===== Utilities =====
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => document.querySelectorAll(sel);
+    // ========= 2) App init =========
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const $ = (s)=>document.querySelector(s);
+    const $$ = (s)=>document.querySelectorAll(s);
+    const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
     function nowISO(){ return new Date().toISOString(); }
     function fmtDate(iso){ try{ return new Date(iso).toLocaleString(); }catch(e){ return iso; } }
-    function uid(){ return Date.now() + '-' + Math.random().toString(36).slice(2,7); }
-    function slugify(str){ return (str||'').toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,60) || 'untitled'; }
+    function uid(){ return Date.now()+'-'+Math.random().toString(36).slice(2,7); }
+    function slugify(s){ return (s||'').toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,60)||'untitled'; }
 
-    // Very small sanitizer to keep BR/IMG and text; strip scripts/attrs
+    // Very small sanitizer
     function sanitizeHTML(dirty){
-      if(!dirty) return "";
+      if(!dirty) return '';
       const parser = new DOMParser();
       const doc = parser.parseFromString(String(dirty), 'text/html');
       doc.querySelectorAll('script, iframe, embed, object, link, style').forEach(n=>n.remove());
       const allowed = new Set(['BR','IMG','P','#text']);
       doc.body.querySelectorAll('*').forEach(el=>{
         if(!allowed.has(el.nodeName)){
-          const p = doc.createElement('p');
-          p.textContent = el.textContent; el.replaceWith(p); return;
+          const p = doc.createElement('p'); p.textContent = el.textContent; el.replaceWith(p); return;
         }
-        [...el.attributes].forEach(attr=>{
-          const ok = el.nodeName==='IMG' && (attr.name==='src' || attr.name==='alt');
-          if(!ok) el.removeAttribute(attr.name);
-        });
+        [...el.attributes].forEach(attr=>{ const ok = el.nodeName==='IMG' && (attr.name==='src'||attr.name==='alt'); if(!ok) el.removeAttribute(attr.name); });
       });
       return doc.body.innerHTML;
     }
 
-    // ===== Storage (localStorage) =====
-    const DB_KEY = 'ar_site_db_v2';
-    function loadDB(){ try{ return JSON.parse(localStorage.getItem(DB_KEY)) || {projects:[], views:[]}; }catch(e){ return {projects:[], views:[]}; } }
-    function saveDB(db){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-
-    // Export/Import
-    function exportJSON(){ const data = { exportedAt: nowISO(), db: loadDB() }; const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ashish-site-export.json'; a.click(); URL.revokeObjectURL(a.href); }
-    function importJSON(file){ const reader=new FileReader(); reader.onload=()=>{ try{ const parsed=JSON.parse(reader.result); if(!parsed.db) throw new Error('Invalid format'); saveDB(parsed.db); renderAll(); alert('Import complete.'); }catch(e){ alert('Import failed: '+e.message); } }; reader.readAsText(file); }
-
-    // ===== App State =====
-    let editorUnlocked = false; // controls visibility of create/edit/delete
-    let current = { type:null, id:null }; // currently viewed entry
-
-    function lockEditing(){ editorUnlocked=false; toggleEditorUI(); }
-    function unlockEditing(){ const pwd = prompt('Enter password to unlock editing:'); if(pwd===PASSWORD){ editorUnlocked=true; } else { alert('Incorrect password.'); } toggleEditorUI(); }
-    function toggleEditorUI(){ $('#unlockBtn').classList.toggle('hidden', editorUnlocked); $('#lockBtn').classList.toggle('hidden', !editorUnlocked); $('#projectControls').classList.toggle('hidden', !editorUnlocked); $('#viewControls').classList.toggle('hidden', !editorUnlocked); // hide editors if locking
-      if(!editorUnlocked){ $('#project-editor').classList.add('hidden'); $('#view-editor').classList.add('hidden'); } }
-
-    // ===== CRUD helpers =====
-    function upsertEntry(type, entry){ const db=loadDB(); const arr=db[type+'s']; const i=arr.findIndex(e=>e.id===entry.id); if(i>=0) arr[i]=entry; else arr.unshift(entry); saveDB(db); return entry; }
-    function deleteEntry(id, type){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } if(confirm('Delete this entry?')){ const db=loadDB(); db[type+'s']=db[type+'s'].filter(e=>e.id!==id); saveDB(db); renderAll(); if(current.id===id){ hideContentDisplay(); } } }
-    function listEntries(type){ return loadDB()[type+'s']; }
-    function getEntry(type,id){ return listEntries(type).find(e=>e.id===id); }
-
-    // ===== Rendering Lists =====
-    function renderList(type){ const cont = type==='project' ? $('#project-entries') : $('#view-entries'); const arr=listEntries(type); cont.innerHTML=''; (type==='project'?$('#projCount'):$('#viewCount')).textContent = arr.length + ' ' + (arr.length===1?'entry':'entries'); arr.forEach(e=> cont.appendChild(renderListItem(e, type)) ); }
-    function renderListItem(entry,type){ const div=document.createElement('div'); div.className='entry card'; const href = `#/${type}/${encodeURIComponent(entry.slug)}-${entry.id}`; const label = type==='project' ? 'Project' : 'View'; const displaySlug = (entry.slug||'').replace(/-[^-]+$/, ''); div.innerHTML = `<div class="row"><a href="${href}">${entry.title}</a><span class="right meta">${fmtDate(entry.updatedAt)}</span></div><div class="meta">${label} • <span class="tag">/${displaySlug}</span></div><div class="actions ${editorUnlocked?'':'hidden'}"><button onclick=\"editEntry('${entry.id}','${type}')\">Edit</button><button onclick=\"deleteEntry('${entry.id}','${type}')\">Delete</button></div>`; return div; }
-
-    // ===== Editors =====
-    function clearEditors(){ $('#projectTitle').value=''; $('#projectText').value=''; $('#projectImage').value=''; $('#viewTitle').value=''; $('#myViewText').value=''; $('#viewImage').value=''; }
-
-    function openEditor(type, id=null){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } clearEditors(); current={type,id}; if(type==='project'){ $('#view-editor').classList.add('hidden'); $('#project-editor').classList.remove('hidden'); if(id){ const e=getEntry('project',id); $('#projectTitle').value=e.title; $('#projectText').value=e.rawText||e.text?.replace(/<br>/g,'\n').replace(/<img.*?>/g,''); } } else { $('#project-editor').classList.add('hidden'); $('#view-editor').classList.remove('hidden'); if(id){ const e=getEntry('view',id); $('#viewTitle').value=e.title; $('#myViewText').value=e.rawText||e.text?.replace(/<br>/g,'\n').replace(/<img.*?>/g,''); } } }
-
-    function saveProject(){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } const title=$('#projectTitle').value.trim(); const raw=$('#projectText').value; const file=$('#projectImage').files[0]; if(!title || !raw){ alert('Title and text are required.'); return; } const finalize=(imageDataUrl)=>{ const id=current.id || uid(); const slug=slugify(title) + '-' + id.slice(-5); const content = raw.replace(/\n/g,'<br>') + (imageDataUrl?`<br><img class="content-img" src="${imageDataUrl}" alt="Project Image">`:""); const entry={ id, type:'project', title, slug, text: content, rawText: raw, createdAt: current.id? getEntry('project',current.id).createdAt : nowISO(), updatedAt: nowISO(), comments: current.id? getEntry('project',current.id).comments||[] : [] }; upsertEntry('project', entry); renderAll(); location.hash = `#/project/${encodeURIComponent(entry.slug)}-${entry.id}`; openEntry('project', entry.id); $('#project-editor').classList.add('hidden'); };
-      if(file){ const reader=new FileReader(); reader.onload = e=> finalize(e.target.result); reader.readAsDataURL(file); } else { finalize(""); } }
-
-    function saveView(){ if(!editorUnlocked){ alert('Unlock editing first.'); return; } const title=$('#viewTitle').value.trim(); const raw=$('#myViewText').value; const file=$('#viewImage').files[0]; if(!title || !raw){ alert('Title and text are required.'); return; } const finalize=(imageDataUrl)=>{ const id=current.id || uid(); const slug=slugify(title) + '-' + id.slice(-5); const content = raw.replace(/\n/g,'<br>') + (imageDataUrl?`<br><img class="content-img" src="${imageDataUrl}" alt="View Image">`:""); const entry={ id, type:'view', title, slug, text: content, rawText: raw, createdAt: current.id? getEntry('view',current.id).createdAt : nowISO(), updatedAt: nowISO(), comments: current.id? getEntry('view',current.id).comments||[] : [] }; upsertEntry('view', entry); renderAll(); location.hash = `#/view/${encodeURIComponent(entry.slug)}-${entry.id}`; openEntry('view', entry.id); $('#view-editor').classList.add('hidden'); };
-      if(file){ const reader=new FileReader(); reader.onload = e=> finalize(e.target.result); reader.readAsDataURL(file); } else { finalize(""); } }
-
-    function editEntry(id,type){ openEditor(type,id); }
-
-    // ===== View Entry =====
-    function openEntry(type,id){ const e=getEntry(type,id); if(!e) return; current={type,id}; $('#content-title').textContent = e.title; const label = e.type==='project' ? 'Project' : 'View';
-const displaySlug = (e.slug||'').replace(/-[^-]+$/, '');
-$('#content-meta').textContent = `${label} • created ${fmtDate(e.createdAt)} • updated ${fmtDate(e.updatedAt)} • /${displaySlug}`; $('#content-text').innerHTML = sanitizeHTML(e.text); $('#comments-list').innerHTML=''; (e.comments||[]).forEach(c=> addCommentToList(c)); $('#commentText').value=''; showSection('content-display'); }
-
-    function addCommentToList(text){ const div=document.createElement('div'); div.className='card'; div.textContent = text; $('#comments-list').appendChild(div); }
-
-    function saveComment(){ const txt=$('#commentText').value.trim(); if(!txt){ return; } const e=getEntry(current.type,current.id); if(!e){ return; } e.comments = e.comments||[]; e.comments.push(txt); upsertEntry(current.type,e); addCommentToList(txt); $('#commentText').value=''; }
-
-    // ===== Routing =====
-    function showSection(id){ $$('.container').forEach(s=> s.classList.remove('show')); $('#'+id).classList.add('show'); if(id!=='content-display'){ $('#commentText').value=''; } }
-
-    function handleHash(){ const h=location.hash || '#/home'; const parts=h.slice(2).split('/'); const page=parts[0]; if(page==='home' || page==='contact'){ showSection(page); return; } if(page==='projects'){ showSection('projects'); return; } if(page==='views'){ showSection('views'); return; } if(page==='project' || page==='view'){ const idPart = parts[1]||''; const id = idPart.split('-').slice(-2).join('-'); // our uid contains '-'
-      const type = page==='project'?'project':'view'; const e = getEntry(type,id); if(e){ openEntry(type,id); } else { // try to find by slug prefix
-        const arr=listEntries(type); const hit = arr.find(x=> (idPart.startsWith(encodeURIComponent(x.slug)) || idPart.startsWith(x.slug)) ); if(hit){ openEntry(type,hit.id); } else { showSection('home'); }
+    // ========= 3) Auth =========
+    async function refreshAuthUI(){
+      const { data: { user } } = await supabase.auth.getUser();
+      if(user){
+        $('#auth-signed-out').classList.add('hidden');
+        $('#auth-signed-in').classList.remove('hidden');
+        $('#auth-status').textContent = 'Signed in';
+        $('#user-email').textContent = user.email || 'user';
+        $('#projectControls').classList.remove('hidden');
+        $('#viewControls').classList.remove('hidden');
+      } else {
+        $('#auth-signed-out').classList.remove('hidden');
+        $('#auth-signed-in').classList.add('hidden');
+        $('#auth-status').textContent = 'Signed out';
+        $('#projectControls').classList.add('hidden');
+        $('#viewControls').classList.add('hidden');
+        $('#project-editor').classList.add('hidden');
+        $('#view-editor').classList.add('hidden');
       }
-      return; }
-      showSection('home'); }
+    }
+
+    async function signInMagic(){
+      const email = $('#email').value.trim();
+      if(!email) return alert('Type your email.');
+      const { error } = await supabase.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href } });
+      if(error) return alert(error.message);
+      alert('Magic link sent. Check your inbox, click the link, then return here.');
+    }
+    async function signInPassword(){
+      const email=$('#email').value.trim(), password=$('#password').value;
+      if(!email||!password) return alert('Email + password required');
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if(error) return alert(error.message);
+      await refreshAuthUI();
+    }
+    async function signOut(){ await supabase.auth.signOut(); await refreshAuthUI(); }
+
+    // ========= 4) CRUD with Supabase =========
+    async function listEntries(type){
+      const { data, error } = await supabase
+        .from('entries')
+        .select('id,type,title,slug,text,created_at,updated_at')
+        .eq('type', type)
+        .order('updated_at', { ascending:false });
+      if(error){ console.error(error); alert('Failed to load '+type+'s'); return []; }
+      return data||[];
+    }
+
+    async function getEntryById(id){
+      const { data, error } = await supabase
+        .from('entries')
+        .select('id,type,title,slug,text,created_at,updated_at')
+        .eq('id', id)
+        .single();
+      if(error){ console.error(error); return null; }
+      return data;
+    }
+
+    async function upsertEntry(payload){
+      const { data, error } = await supabase
+        .from('entries')
+        .upsert(payload)
+        .select()
+        .single();
+      if(error){ console.error(error); alert('Save failed: '+error.message); return null; }
+      return data;
+    }
+
+    async function deleteEntry(id){
+      const { error } = await supabase.from('entries').delete().eq('id', id);
+      if(error){ console.error(error); alert('Delete failed: '+error.message); }
+    }
+
+    async function listComments(entry_id){
+      const { data, error } = await supabase
+        .from('comments')
+        .select('id,body,created_at')
+        .eq('entry_id', entry_id)
+        .order('created_at',{ ascending:true });
+      if(error){ console.error(error); return []; }
+      return data||[];
+    }
+
+    async function addComment(entry_id, body){
+      // Honeypot check
+      if($('#hp').value) return; // bot filled hidden field
+      const { error } = await supabase.from('comments').insert({ entry_id, body });
+      if(error){ console.error(error); alert('Comment failed: '+error.message); }
+    }
+
+    // ========= 5) Rendering =========
+    function setActive(linkId){ ['home','projects','views','contact'].forEach(id=> $('#link-'+id).classList.remove('active')); if(linkId) $('#link-'+linkId).classList.add('active'); }
+    function show(section){ ['home','projects','views','contact','content-display'].forEach(id=> $('#'+id).classList.add('hidden')); $('#'+section).classList.remove('hidden'); }
+
+    function renderListItem(e){
+      const div=document.createElement('div');
+      div.className='entry card';
+      const link = `#/${e.type}/${encodeURIComponent(e.slug)}-${e.id}`;
+      const displaySlug = (e.slug||'').replace(/-[^-]+$/, '');
+      div.innerHTML = `<div class="row"><a href="${link}">${e.title}</a><span class="right meta">${fmtDate(e.updated_at)}</span></div><div class="meta">${e.type==='project'?'Project':'View'} • <span class="tag">/${displaySlug}</span></div>`;
+      return div;
+    }
+
+    async function renderLists(){
+      const [projects, views] = await Promise.all([listEntries('project'), listEntries('view')]);
+      $('#projCount').textContent = `${projects.length} ${projects.length===1?'entry':'entries'}`;
+      $('#viewCount').textContent = `${views.length} ${views.length===1?'entry':'entries'}`;
+      const pe=$('#project-entries'); pe.innerHTML=''; projects.forEach(e=> pe.appendChild(renderListItem(e)));
+      const ve=$('#view-entries'); ve.innerHTML=''; views.forEach(e=> ve.appendChild(renderListItem(e)));
+    }
+
+    async function openEntryByHash(type, composite){
+      // composite is slug-id; we trust id at the end
+      const id = composite.split('-').slice(-2).join('-');
+      const e = await getEntryById(id);
+      if(!e){ show('home'); return; }
+      $('#content-title').textContent = e.title;
+      const label = e.type==='project' ? 'Project' : 'View';
+      const displaySlug = (e.slug||'').replace(/-[^-]+$/, '');
+      $('#content-meta').textContent = `${label} • created ${fmtDate(e.created_at)} • updated ${fmtDate(e.updated_at)} • /${displaySlug}`;
+      $('#content-text').innerHTML = sanitizeHTML(e.text);
+      // comments
+      $('#comments-list').innerHTML='';
+      const comments = await listComments(e.id);
+      comments.forEach(c=>{ const d=document.createElement('div'); d.className='card'; d.textContent=c.body; $('#comments-list').appendChild(d); });
+      $('#commentText').value='';
+      $('#submitCommentBtn').onclick = async ()=>{ const body=$('#commentText').value.trim(); if(!body) return; await addComment(e.id, body); const d=document.createElement('div'); d.className='card'; d.textContent=body; $('#comments-list').appendChild(d); $('#commentText').value=''; };
+      show('content-display');
+    }
+
+    // ========= 6) Editors =========
+    function openEditor(type, existing=null){
+      const t = type==='project' ? 'project' : 'view';
+      if(t==='project'){
+        $('#view-editor').classList.add('hidden');
+        $('#project-editor').classList.remove('hidden');
+        $('#projectTitle').value = existing?.title||'';
+        $('#projectText').value = existing?.text?.replace(/<br>/g,'\n').replace(/<img.*?>/g,'')||'';
+        $('#projectImage').value = '';
+        $('#saveProjectBtn').onclick = ()=> saveEntry('project', existing?.id||null);
+      } else {
+        $('#project-editor').classList.add('hidden');
+        $('#view-editor').classList.remove('hidden');
+        $('#viewTitle').value = existing?.title||'';
+        $('#myViewText').value = existing?.text?.replace(/<br>/g,'\n').replace(/<img.*?>/g,'')||'';
+        $('#viewImage').value = '';
+        $('#saveViewBtn').onclick = ()=> saveEntry('view', existing?.id||null);
+      }
+    }
+
+    async function saveEntry(type, id){
+      const isProject = type==='project';
+      const title = (isProject?$('#projectTitle'):$('#viewTitle')).value.trim();
+      const raw   = (isProject?$('#projectText'):$('#myViewText')).value;
+      const file  = (isProject?$('#projectImage'):$('#viewImage')).files[0];
+      if(!title || !raw) return alert('Title and text are required.');
+
+      const finalize = async (imageDataUrl)=>{
+        const slug = slugify(title) + '-' + (id ? id.slice(-5) : uid().slice(-5));
+        const content = raw.replace(/\n/g,'<br>') + (imageDataUrl?`<br><img class="content-img" src="${imageDataUrl}" alt="Image">`:"");
+        const payload = id ? { id, title, slug, text: content, updated_at: nowISO() } : { id: uid(), type, title, slug, text: content, created_at: nowISO(), updated_at: nowISO() };
+        const saved = await upsertEntry(payload);
+        if(!saved) return;
+        (isProject?$('#project-editor'):$('#view-editor')).classList.add('hidden');
+        await renderLists();
+        location.hash = `#/${type}/${encodeURIComponent(saved.slug)}-${saved.id}`;
+        await openEntryByHash(type, `${saved.slug}-${saved.id}`);
+      };
+
+      if(file){ const reader=new FileReader(); reader.onload = e=> finalize(e.target.result); reader.readAsDataURL(file); } else { finalize(''); }
+    }
+
+    // ========= 7) Export / Import =========
+    async function exportJSON(){
+      const [projects, views] = await Promise.all([
+        supabase.from('entries').select('*').eq('type','project'),
+        supabase.from('entries').select('*').eq('type','view')
+      ]);
+      const { data: comments } = await supabase.from('comments').select('*');
+      const data = { exportedAt: nowISO(), entries: [...(projects.data||[]), ...(views.data||[])], comments: comments||[] };
+      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ashish-supabase-export.json'; a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    async function importJSON(file){
+      const r=new FileReader(); r.onload=async ()=>{
+        try{
+          const parsed=JSON.parse(r.result);
+          const entries = parsed.entries||[]; const comments=parsed.comments||[];
+          if(!Array.isArray(entries)) throw new Error('Invalid entries');
+          // upsert entries in small batches
+          for(const chunk of chunked(entries, 100)){
+            const { error } = await supabase.from('entries').upsert(chunk);
+            if(error) throw error;
+          }
+          for(const chunk of chunked(comments, 200)){
+            const { error } = await supabase.from('comments').upsert(chunk);
+            if(error) throw error;
+          }
+          alert('Import complete.');
+          await renderLists();
+        }catch(e){ alert('Import failed: '+e.message); }
+      }; r.readAsText(file);
+    }
+
+    function chunked(arr, size){ const out=[]; for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size)); return out; }
+
+    // ========= 8) Router =========
+    function handleHash(){ const h=location.hash||'#/home'; const [_,page,rest] = h.split('/');
+      $$('#content-display, #home, #projects, #views, #contact').forEach(el=>el.classList.add('hidden'));
+      if(page==='home'){ setActive('home'); $('#home').classList.remove('hidden'); return; }
+      if(page==='projects'){ setActive('projects'); $('#projects').classList.remove('hidden'); return; }
+      if(page==='views'){ setActive('views'); $('#views').classList.remove('hidden'); return; }
+      if(page==='contact'){ setActive('contact'); $('#contact').classList.remove('hidden'); return; }
+      if(page==='project' || page==='view'){ openEntryByHash(page, rest); return; }
+      setActive('home'); $('#home').classList.remove('hidden');
+    }
+
+    // ========= 9) Event wiring =========
+    $('#usePasswordBtn').onclick = ()=> $('#passwordBox').classList.toggle('hidden');
+    $('#loginBtn').onclick = signInMagic;
+    $('#loginPwdBtn').onclick = signInPassword;
+    $('#logoutBtn').onclick = signOut;
+
+    $('#newProjectBtn').onclick = ()=> openEditor('project');
+    $('#newViewBtn').onclick = ()=> openEditor('view');
+
+    $('#cancelProjectBtn').onclick = ()=> $('#project-editor').classList.add('hidden');
+    $('#cancelViewBtn').onclick = ()=> $('#view-editor').classList.add('hidden');
+
+    $('#exportBtn').onclick = exportJSON;
+    $('#importFile').onchange = e=> e.target.files[0] && importJSON(e.target.files[0]);
+
+    $('#toggleCommentBtn').onclick = ()=>{ const el=$('#commentText'); el.classList.toggle('hidden'); };
 
     window.addEventListener('hashchange', handleHash);
 
-    // ===== Render =====
-    function renderAll(){ renderList('project'); renderList('view'); }
-
-    // ===== Events =====
-    $('#newProjectBtn').onclick = ()=> openEditor('project');
-    $('#newViewBtn').onclick = ()=> openEditor('view');
-    $('#saveProjectBtn').onclick = saveProject;
-    $('#cancelProjectBtn').onclick = ()=> $('#project-editor').classList.add('hidden');
-    $('#saveViewBtn').onclick = saveView;
-    $('#cancelViewBtn').onclick = ()=> $('#view-editor').classList.add('hidden');
-    $('#submitCommentBtn').onclick = saveComment;
-    $('#toggleCommentBtn').onclick = ()=>{ const el=$('#comment-section'); el.style.display = (el.style.display==='none'?'block':'none'); };
-    $('#exportBtn').onclick = exportJSON;
-    $('#importFile').onchange = e=> e.target.files[0] && importJSON(e.target.files[0]);
-    $('#unlockBtn').onclick = unlockEditing;
-    $('#lockBtn').onclick = lockEditing;
-
-    // ===== Boot =====
-    renderAll(); handleHash(); toggleEditorUI();
+    // ========= 10) Boot =========
+    (async function(){
+      await refreshAuthUI();
+      await renderLists();
+      handleHash();
+      // listen to auth changes
+      supabase.auth.onAuthStateChange(async ()=>{ await refreshAuthUI(); });
+    })();
   </script>
+
+  <!-- ===== Docs =====
+  SETUP STEPS (Supabase)
+  1) Create a project at supabase.com → get your PROJECT URL and ANON KEY; paste above.
+  2) SQL (run in Supabase SQL editor):
+
+  -- enable pgcrypto for uuid if needed
+  -- create extension if not exists pgcrypto;
+
+  create table if not exists public.entries (
+    id text primary key,
+    type text check (type in ('project','view')) not null,
+    title text not null,
+    slug text not null,
+    text text not null,
+    created_at timestamptz default now() not null,
+    updated_at timestamptz default now() not null,
+    user_id uuid references auth.users(id)
+  );
+
+  create table if not exists public.comments (
+    id bigint generated always as identity primary key,
+    entry_id text references public.entries(id) on delete cascade,
+    body text not null,
+    created_at timestamptz default now() not null,
+    user_id uuid references auth.users(id)
+  );
+
+  -- RLS
+  alter table public.entries enable row level security;
+  alter table public.comments enable row level security;
+
+  -- Policies: read for everyone
+  create policy if not exists "entries read" on public.entries for select using (true);
+  create policy if not exists "comments read" on public.comments for select using (true);
+
+  -- Write: only authenticated users
+  create policy if not exists "entries write" on public.entries for insert with check (auth.role() = 'authenticated');
+  create policy if not exists "entries update" on public.entries for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  create policy if not exists "entries delete" on public.entries for delete using (auth.uid() = user_id);
+
+  create policy if not exists "comments insert" on public.comments for insert with check (auth.role() = 'authenticated');
+  create policy if not exists "comments delete" on public.comments for delete using (auth.uid() = user_id);
+
+  -- Triggers to set user_id on insert (so update/delete checks pass)
+  create function public.set_user_id() returns trigger language plpgsql as $$
+  begin
+    if new.user_id is null then new.user_id := auth.uid(); end if;
+    return new;
+  end; $$;
+
+  drop trigger if exists set_user_id_entries on public.entries;
+  create trigger set_user_id_entries before insert on public.entries
+  for each row execute procedure public.set_user_id();
+
+  drop trigger if exists set_user_id_comments on public.comments;
+  create trigger set_user_id_comments before insert on public.comments
+  for each row execute procedure public.set_user_id();
+
+  3) Auth: enable Email provider (magic link or password) in Authentication → Providers.
+  4) Deploy this single file as index.html to GitHub Pages / Netlify / Vercel.
+  -->
 </body>
 </html>
